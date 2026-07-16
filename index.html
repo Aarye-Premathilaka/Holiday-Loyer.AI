@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="FlightClaim AI helps passengers check possible flight-delay compensation and prepare a professional claim letter." />
+  <title>FlightClaim AI — Flight compensation made clearer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="FlightClaim AI home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 48 48" role="img">
+          <path d="M9 27.5 39.5 11c1.8-1 3.7.9 2.7 2.7L25.8 44.2a2 2 0 0 1-3.7-.5l-2.2-12-11.7-1.8a2 2 0 0 1-.7-3.7Z"/>
+          <path class="brand-cut" d="m20.1 31.7 8.8-8.7"/>
+        </svg>
+      </span>
+      <span>FlightClaim <strong>AI</strong></span>
+    </a>
+
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      <a href="#checker">Check a flight</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#rights">Your rights</a>
+      <a href="#contact">Contact</a>
+    </nav>
+
+    <a class="button button-small button-ghost" href="#checker">Start free check</a>
+  </header>
+
+  <main id="top">
+    <section class="hero section-shell">
+      <div class="hero-copy">
+        <div class="eyebrow">
+          <span class="status-dot"></span>
+          AI-assisted passenger-rights platform
+        </div>
+        <h1>Turn a delayed flight into a <span>ready-to-send claim.</span></h1>
+        <p class="hero-lead">
+          Check whether your journey may qualify for compensation, understand the reason,
+          and generate a structured airline claim letter in minutes.
+        </p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#checker">
+            Check my flight
+            <span aria-hidden="true">→</span>
+          </a>
+          <a class="button button-secondary" href="#how-it-works">See how it works</a>
+        </div>
+        <div class="trust-row" aria-label="Product qualities">
+          <span>✓ No account required</span>
+          <span>✓ Transparent result</span>
+          <span>✓ Privacy-first demo</span>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-label="Flight claim product preview">
+        <div class="visual-glow"></div>
+        <div class="flight-card">
+          <div class="card-topline">
+            <div>
+              <span class="mini-label">Flight analysis</span>
+              <h2>Possible compensation</h2>
+            </div>
+            <span class="secure-badge">Protected</span>
+          </div>
+
+          <div class="route">
+            <div>
+              <strong>ZRH</strong>
+              <span>Zurich</span>
+            </div>
+            <div class="route-line">
+              <span class="plane-icon">✈</span>
+            </div>
+            <div>
+              <strong>LHR</strong>
+              <span>London</span>
+            </div>
+          </div>
+
+          <div class="amount-panel">
+            <span>Estimated claim</span>
+            <strong>€250</strong>
+            <small>Subject to route, delay cause and evidence</small>
+          </div>
+
+          <div class="analysis-list">
+            <div><span>Arrival delay</span><strong class="positive">3h 42m</strong></div>
+            <div><span>Route coverage</span><strong class="positive">Likely covered</strong></div>
+            <div><span>Claim letter</span><strong>Ready to generate</strong></div>
+          </div>
+        </div>
+
+        <div class="floating-chip floating-chip-one">
+          <span>✓</span>
+          Eligibility checked
+        </div>
+        <div class="floating-chip floating-chip-two">
+          <span>AI</span>
+          Clear explanation
+        </div>
+      </div>
+    </section>
+
+    <section class="metrics section-shell" aria-label="Platform benefits">
+      <div><strong>3 min</strong><span>guided eligibility check</span></div>
+      <div><strong>€250–€600</strong><span>possible standard compensation</span></div>
+      <div><strong>1 document</strong><span>structured claim package</span></div>
+      <div><strong>0%</strong><span>commission in this demo</span></div>
+    </section>
+
+    <section id="checker" class="checker-section section-shell">
+      <div class="section-heading centered">
+        <div class="eyebrow">Interactive demo</div>
+        <h2>Check your possible compensation</h2>
+        <p>Answer a few questions. The result is an initial assessment, not a legal guarantee.</p>
+      </div>
+
+      <div class="checker-layout">
+        <aside class="checker-aside">
+          <span class="aside-number">01</span>
+          <h3>Flight eligibility</h3>
+          <p>
+            The checker applies a simplified rules engine based on route coverage,
+            arrival delay, flight distance and the reported cause.
+          </p>
+          <div class="aside-note">
+            <strong>Why this matters</strong>
+            <span>Not every delay qualifies. Weather, air-traffic restrictions and security events can change the result.</span>
+          </div>
+        </aside>
+
+        <div class="checker-card">
+          <div class="progress-header">
+            <div>
+              <span id="stepLabel">Step 1 of 4</span>
+              <strong id="stepTitle">Route coverage</strong>
+            </div>
+            <div class="progress-track" aria-hidden="true">
+              <span id="progressBar"></span>
+            </div>
+          </div>
+
+          <form id="eligibilityForm" novalidate>
+            <section class="form-step active" data-step="1">
+              <fieldset>
+                <legend>Where did the journey start?</legend>
+                <div class="choice-grid">
+                  <label class="choice-card">
+                    <input type="radio" name="departureRegion" value="covered" required />
+                    <span class="choice-icon">CH</span>
+                    <span>
+                      <strong>Switzerland / EU / EEA</strong>
+                      <small>The flight departed from the covered area.</small>
+                    </span>
+                  </label>
+                  <label class="choice-card">
+                    <input type="radio" name="departureRegion" value="outside" />
+                    <span class="choice-icon">INT</span>
+                    <span>
+                      <strong>Outside the covered area</strong>
+                      <small>The flight started in another country.</small>
+                    </span>
+                  </label>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>Where did the journey end?</legend>
+                <div class="choice-grid">
+                  <label class="choice-card">
+                    <input type="radio" name="arrivalRegion" value="covered" required />
+                    <span class="choice-icon">EU</span>
+                    <span>
+                      <strong>Switzerland / EU / EEA</strong>
+                      <small>The destination was in the covered area.</small>
+                    </span>
+                  </label>
+                  <label class="choice-card">
+                    <input type="radio" name="arrivalRegion" value="outside" />
+                    <span class="choice-icon">INT</span>
+                    <span>
+                      <strong>Outside the covered area</strong>
+                      <small>The destination was in another country.</small>
+                    </span>
+                  </label>
+                </div>
+              </fieldset>
+
+              <fieldset id="carrierFieldset">
+                <legend>Was the operating airline based in Switzerland, the EU or EEA?</legend>
+                <div class="segmented">
+                  <label><input type="radio" name="coveredCarrier" value="yes" required><span>Yes</span></label>
+                  <label><input type="radio" name="coveredCarrier" value="no"><span>No</span></label>
+                  <label><input type="radio" name="coveredCarrier" value="unknown"><span>Not sure</span></label>
+                </div>
+              </fieldset>
+            </section>
+
+            <section class="form-step" data-step="2">
+              <fieldset>
+                <legend>How late did you arrive at your final destination?</legend>
+                <div class="choice-list">
+                  <label class="choice-row">
+                    <input type="radio" name="arrivalDelay" value="under3" required />
+                    <span><strong>Less than 3 hours</strong><small>Standard delay compensation is usually not available.</small></span>
+                  </label>
+                  <label class="choice-row">
+                    <input type="radio" name="arrivalDelay" value="3to4" />
+                    <span><strong>3 to 4 hours</strong><small>You may qualify depending on the other facts.</small></span>
+                  </label>
+                  <label class="choice-row">
+                    <input type="radio" name="arrivalDelay" value="over4" />
+                    <span><strong>More than 4 hours</strong><small>You may qualify depending on the other facts.</small></span>
+                  </label>
+                  <label class="choice-row">
+                    <input type="radio" name="arrivalDelay" value="unknown" />
+                    <span><strong>I do not know yet</strong><small>Use the actual arrival time, not only the departure delay.</small></span>
+                  </label>
+                </div>
+              </fieldset>
+            </section>
+
+            <section class="form-step" data-step="3">
+              <fieldset>
+                <legend>What was the approximate flight distance?</legend>
+                <div class="choice-grid three">
+                  <label class="choice-card compact">
+                    <input type="radio" name="distance" value="short" required />
+                    <span class="choice-icon">S</span>
+                    <span><strong>Up to 1,500 km</strong><small>Potentially €250</small></span>
+                  </label>
+                  <label class="choice-card compact">
+                    <input type="radio" name="distance" value="medium" />
+                    <span class="choice-icon">M</span>
+                    <span><strong>1,501–3,500 km</strong><small>Potentially €400</small></span>
+                  </label>
+                  <label class="choice-card compact">
+                    <input type="radio" name="distance" value="long" />
+                    <span class="choice-icon">L</span>
+                    <span><strong>More than 3,500 km</strong><small>Potentially €400 or €600</small></span>
+                  </label>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>Were both airports inside Switzerland / EU / EEA?</legend>
+                <div class="segmented">
+                  <label><input type="radio" name="intraArea" value="yes" required><span>Yes</span></label>
+                  <label><input type="radio" name="intraArea" value="no"><span>No</span></label>
+                  <label><input type="radio" name="intraArea" value="unknown"><span>Not sure</span></label>
+                </div>
+              </fieldset>
+            </section>
+
+            <section class="form-step" data-step="4">
+              <fieldset>
+                <legend>What reason did the airline give?</legend>
+                <div class="choice-list">
+                  <label class="choice-row">
+                    <input type="radio" name="cause" value="airline" required />
+                    <span><strong>Operational, staffing or ordinary technical issue</strong><small>Often more favourable for a compensation claim.</small></span>
+                  </label>
+                  <label class="choice-row">
+                    <input type="radio" name="cause" value="extraordinary" />
+                    <span><strong>Weather, air-traffic control, security or airport closure</strong><small>These may be extraordinary circumstances.</small></span>
+                  </label>
+                  <label class="choice-row">
+                    <input type="radio" name="cause" value="unknown" />
+                    <span><strong>No clear reason was provided</strong><small>The airline should explain and support its refusal.</small></span>
+                  </label>
+                </div>
+              </fieldset>
+            </section>
+
+            <div class="form-error" id="formError" role="alert"></div>
+
+            <div class="form-actions">
+              <button type="button" class="button button-secondary" id="backButton" disabled>Back</button>
+              <button type="button" class="button button-primary" id="nextButton">Continue</button>
+            </div>
+          </form>
+
+          <section id="resultPanel" class="result-panel" aria-live="polite">
+            <div class="result-icon" id="resultIcon">✓</div>
+            <div class="result-copy">
+              <span class="mini-label">Initial assessment</span>
+              <h3 id="resultHeading">Your flight may qualify</h3>
+              <p id="resultText"></p>
+              <div class="result-amount" id="resultAmount"></div>
+              <ul id="resultReasons"></ul>
+            </div>
+            <div class="result-actions">
+              <button class="button button-primary" id="openClaimForm">Prepare claim letter</button>
+              <button class="button button-secondary" id="restartButton">Check another flight</button>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section id="claimBuilder" class="claim-section section-shell hidden">
+      <div class="section-heading">
+        <div class="eyebrow">Document builder</div>
+        <h2>Create your airline claim letter</h2>
+        <p>Enter only the information needed for the letter. This browser demo does not transmit your data.</p>
+      </div>
+
+      <div class="builder-layout">
+        <form id="claimForm" class="details-card">
+          <div class="input-grid two">
+            <label>
+              <span>Passenger full name</span>
+              <input id="passengerName" type="text" placeholder="Alex Example" required />
+            </label>
+            <label>
+              <span>Airline</span>
+              <input id="airlineName" type="text" placeholder="Example Airways" required />
+            </label>
+          </div>
+
+          <div class="input-grid three">
+            <label>
+              <span>Flight number</span>
+              <input id="flightNumber" type="text" placeholder="XY123" required />
+            </label>
+            <label>
+              <span>Flight date</span>
+              <input id="flightDate" type="date" required />
+            </label>
+            <label>
+              <span>Booking reference</span>
+              <input id="bookingReference" type="text" placeholder="ABC123" required />
+            </label>
+          </div>
+
+          <div class="input-grid two">
+            <label>
+              <span>Departure airport</span>
+              <input id="departureAirport" type="text" placeholder="Zurich (ZRH)" required />
+            </label>
+            <label>
+              <span>Final destination</span>
+              <input id="arrivalAirport" type="text" placeholder="London Heathrow (LHR)" required />
+            </label>
+          </div>
+
+          <div class="input-grid two">
+            <label>
+              <span>Scheduled arrival time</span>
+              <input id="scheduledArrival" type="time" required />
+            </label>
+            <label>
+              <span>Actual arrival time</span>
+              <input id="actualArrival" type="time" required />
+            </label>
+          </div>
+
+          <label>
+            <span>Airline explanation or additional facts</span>
+            <textarea id="extraFacts" rows="4" placeholder="Example: The airline stated that the delay was caused by a crew scheduling issue."></textarea>
+          </label>
+
+          <label class="consent-row">
+            <input id="confirmAccuracy" type="checkbox" required />
+            <span>I confirm that the details are accurate and I will review the generated letter before sending it.</span>
+          </label>
+
+          <button type="submit" class="button button-primary full-width">Generate claim letter</button>
+        </form>
+
+        <div class="document-preview">
+          <div class="document-toolbar">
+            <div>
+              <span class="mini-label">Live document</span>
+              <strong>Compensation claim</strong>
+            </div>
+            <span class="document-status" id="documentStatus">Waiting for details</span>
+          </div>
+
+          <article id="claimDocument" class="paper">
+            <div class="paper-placeholder">
+              <div class="paper-symbol">AI</div>
+              <h3>Your generated letter will appear here</h3>
+              <p>Complete the form to create a structured, editable claim.</p>
+            </div>
+          </article>
+
+          <div class="document-actions hidden" id="documentActions">
+            <button class="button button-secondary" id="copyLetter" type="button">Copy text</button>
+            <button class="button button-primary" id="printLetter" type="button">Print / Save as PDF</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how-it-works" class="process-section section-shell">
+      <div class="section-heading centered">
+        <div class="eyebrow">Simple process</div>
+        <h2>From disruption to documented claim</h2>
+      </div>
+
+      <div class="process-grid">
+        <article>
+          <span>01</span>
+          <div class="process-icon">⌁</div>
+          <h3>Check coverage</h3>
+          <p>Review route, carrier, arrival delay, distance and the reason for disruption.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <div class="process-icon">AI</div>
+          <h3>Explain the result</h3>
+          <p>See a transparent assessment instead of receiving a mysterious yes-or-no answer.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <div class="process-icon">▤</div>
+          <h3>Build the letter</h3>
+          <p>Create a professional claim with the important facts and requested compensation.</p>
+        </article>
+        <article>
+          <span>04</span>
+          <div class="process-icon">↗</div>
+          <h3>Send and escalate</h3>
+          <p>Send it to the airline first. If necessary, use the appropriate enforcement or dispute channel.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="rights" class="rights-section section-shell">
+      <div class="rights-copy">
+        <div class="eyebrow">Know the basics</div>
+        <h2>Your rights should not feel impossible to understand.</h2>
+        <p>
+          Depending on the journey, passengers arriving three or more hours late may be able
+          to claim standard compensation where the disruption was not caused by extraordinary circumstances.
+        </p>
+        <div class="rights-note">
+          <strong>Swiss-specific caution</strong>
+          <span>
+            European court decisions on compensation for long delays can guide Swiss authorities and courts,
+            but are not automatically binding in Switzerland. The website therefore says “may qualify” rather than guaranteeing payment.
+          </span>
+        </div>
+      </div>
+
+      <div class="compensation-grid">
+        <article>
+          <span>Up to 1,500 km</span>
+          <strong>€250</strong>
+          <small>Potential standard compensation</small>
+        </article>
+        <article>
+          <span>1,501–3,500 km</span>
+          <strong>€400</strong>
+          <small>Potential standard compensation</small>
+        </article>
+        <article>
+          <span>More than 3,500 km</span>
+          <strong>€600</strong>
+          <small>Usually for qualifying non-intra-area routes</small>
+        </article>
+      </div>
+    </section>
+
+    <section class="safety-section section-shell">
+      <div class="safety-card">
+        <div>
+          <span class="eyebrow">Responsible AI</span>
+          <h2>Useful automation, with clear human control.</h2>
+        </div>
+        <div class="safety-points">
+          <p><span>01</span><strong>Transparent:</strong> users are told that the assessment and document are AI-assisted.</p>
+          <p><span>02</span><strong>Reviewable:</strong> no document is sent automatically; the passenger reviews it first.</p>
+          <p><span>03</span><strong>Honest:</strong> the platform is not presented as a law firm, court or government authority.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="contact-section section-shell">
+      <div>
+        <div class="eyebrow">Contact</div>
+        <h2>Questions, feedback or partnership ideas?</h2>
+        <p>Contact information will be added before the public launch.</p>
+      </div>
+      <a class="button button-secondary disabled-link" href="#" aria-disabled="true">Contact coming soon</a>
+    </section>
+  </main>
+
+  <footer class="site-footer section-shell">
+    <div class="brand footer-brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 48 48">
+          <path d="M9 27.5 39.5 11c1.8-1 3.7.9 2.7 2.7L25.8 44.2a2 2 0 0 1-3.7-.5l-2.2-12-11.7-1.8a2 2 0 0 1-.7-3.7Z"/>
+          <path class="brand-cut" d="m20.1 31.7 8.8-8.7"/>
+        </svg>
+      </span>
+      <span>FlightClaim <strong>AI</strong></span>
+    </div>
+    <p>
+      This demo provides general information and document assistance. It is not a law firm,
+      does not provide legal representation and does not guarantee compensation.
+    </p>
+    <span>© <span id="currentYear"></span> FlightClaim AI</span>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
