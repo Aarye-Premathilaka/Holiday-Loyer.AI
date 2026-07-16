@@ -3,827 +3,279 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="HolidayLawyer.ai helps travellers assess flight and baggage claims, organise evidence and prepare professional claim documents." />
-  <meta name="theme-color" content="#ffffff" />
-  <title>HolidayLawyer.ai — Build a stronger travel claim</title>
+  <meta name="theme-color" content="#f7f8fb" />
+  <meta name="description" content="HolidayLawyer.ai helps travellers check flight and baggage claims, organise evidence and prepare a clear claim letter." />
+  <title>HolidayLawyer.ai</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="announcement">
-    <span>Independent portfolio prototype</span>
-    <span class="announcement-divider"></span>
-    <span>AI integration will be added after the rules and workflow are approved.</span>
+  <div class="app-shell">
+    <header class="app-header">
+      <button class="brand" type="button" data-view-link="home" aria-label="HolidayLawyer.ai home">
+        <span class="brand-mark">HL</span>
+        <span>HolidayLawyer<span class="brand-ai">.ai</span></span>
+      </button>
+      <button class="bruce-chip" type="button" data-view-link="more" aria-label="About Bruce Rogers">
+        <span class="bruce-avatar">BR</span>
+        <span><strong>Bruce Rogers</strong><small>AI Claims Assistant</small></span>
+      </button>
+    </header>
+
+    <main>
+      <section class="app-view active" data-view="home">
+        <div class="intro-card">
+          <span class="quiet-label">Travel claim assistant</span>
+          <h1>What went wrong?</h1>
+          <p>Check the case, collect evidence and prepare a clear first claim.</p>
+        </div>
+
+        <div class="quick-grid">
+          <button class="quick-card" type="button" data-start-case="flight">
+            <span class="quick-icon blue-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="m3 14 18-9-7 14-3-5-8 0Z"/><path d="m11 14 3-3"/></svg>
+            </span>
+            <span><strong>Flight problem</strong><small>Delay, cancellation or denied boarding</small></span>
+            <b>→</b>
+          </button>
+
+          <button class="quick-card" type="button" data-start-case="baggage">
+            <span class="quick-icon sand-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><rect x="5" y="7" width="14" height="13" rx="2"/><path d="M9 7V5h6v2M9 11v5M15 11v5"/></svg>
+            </span>
+            <span><strong>Baggage problem</strong><small>Delayed, lost or damaged baggage</small></span>
+            <b>→</b>
+          </button>
+        </div>
+
+        <section class="card saved-card" id="homeCaseCard">
+          <div class="card-heading">
+            <div>
+              <span class="quiet-label">Your case</span>
+              <h2 id="homeCaseTitle">No active case</h2>
+            </div>
+            <span class="status-dot" id="homeCaseStatus">New</span>
+          </div>
+          <p id="homeCaseText">Start with a short check. Your progress can stay on this device.</p>
+          <button class="full-button secondary-button" type="button" data-view-link="check" id="continueCaseButton">Start a case</button>
+        </section>
+
+        <div class="mini-stats">
+          <div><strong>No fee</strong><span>for the prototype</span></div>
+          <div><strong>Local</strong><span>browser storage</span></div>
+          <div><strong>You approve</strong><span>before sending</span></div>
+        </div>
+      </section>
+
+      <section class="app-view" data-view="check">
+        <div class="page-title">
+          <button class="back-link" type="button" data-view-link="home">← Home</button>
+          <span class="quiet-label">Case check</span>
+          <h1 id="checkTitle">Build your case</h1>
+          <p id="checkSubtitle">Only the details that affect the first claim.</p>
+        </div>
+
+        <div class="progress-block">
+          <div><span id="stepLabel">1 of 4</span><strong id="stepName">Problem</strong></div>
+          <div class="progress-line"><span id="progressFill"></span></div>
+        </div>
+
+        <form id="caseForm" class="form-card" novalidate>
+          <section class="form-step active" data-step="1">
+            <fieldset>
+              <legend>Choose the problem</legend>
+              <div class="choice-stack">
+                <label class="choice-row">
+                  <input type="radio" name="caseType" value="flight" required />
+                  <span class="choice-symbol blue-icon">
+                    <svg viewBox="0 0 24 24"><path d="m3 14 18-9-7 14-3-5-8 0Z"/><path d="m11 14 3-3"/></svg>
+                  </span>
+                  <span><strong>Flight problem</strong><small>Delay, cancellation, denied boarding</small></span>
+                  <i></i>
+                </label>
+                <label class="choice-row">
+                  <input type="radio" name="caseType" value="baggage" />
+                  <span class="choice-symbol sand-icon">
+                    <svg viewBox="0 0 24 24"><rect x="5" y="7" width="14" height="13" rx="2"/><path d="M9 7V5h6v2M9 11v5M15 11v5"/></svg>
+                  </span>
+                  <span><strong>Baggage problem</strong><small>Delayed, lost or damaged</small></span>
+                  <i></i>
+                </label>
+              </div>
+            </fieldset>
+          </section>
+
+          <section class="form-step" data-step="2">
+            <fieldset>
+              <legend>What happened?</legend>
+              <div class="field-grid">
+                <label><span>Departure area</span><select name="departureArea" required><option value="">Choose</option><option value="covered">Switzerland / EU / EEA</option><option value="outside">Outside this area</option></select></label>
+                <label><span>Arrival area</span><select name="arrivalArea" required><option value="">Choose</option><option value="covered">Switzerland / EU / EEA</option><option value="outside">Outside this area</option></select></label>
+                <label><span>Operating airline</span><select name="carrierArea" required><option value="">Choose</option><option value="covered">Based in Switzerland / EU / EEA</option><option value="outside">Based outside this area</option><option value="unknown">Not sure</option></select></label>
+              </div>
+
+              <div id="flightFields" class="conditional-fields">
+                <div class="field-grid">
+                  <label><span>Incident</span><select name="flightIncident"><option value="">Choose</option><option value="delay">Arrival delay</option><option value="cancellation">Cancellation</option><option value="denied">Denied boarding</option><option value="connection">Missed connection</option></select></label>
+                  <label><span>Arrival delay</span><select name="arrivalDelay"><option value="">Choose</option><option value="under3">Under 3 hours</option><option value="3to4">3–4 hours</option><option value="over4">More than 4 hours</option><option value="not-arrived">Did not arrive</option><option value="unknown">Not sure</option></select></label>
+                  <label><span>Distance</span><select name="distance"><option value="">Choose</option><option value="short">Up to 1,500 km</option><option value="medium">1,501–3,500 km</option><option value="long">More than 3,500 km</option><option value="unknown">Not sure</option></select></label>
+                  <label><span>Reason given</span><select name="cause"><option value="">Choose</option><option value="airline">Operational / staffing / technical</option><option value="extraordinary">Weather / air traffic / security</option><option value="none">No clear reason</option><option value="unknown">Not sure</option></select></label>
+                </div>
+              </div>
+
+              <div id="baggageFields" class="conditional-fields hidden">
+                <div class="field-grid">
+                  <label><span>Incident</span><select name="baggageIncident"><option value="">Choose</option><option value="delayed">Delayed baggage</option><option value="lost">Still missing</option><option value="damaged">Damaged baggage</option></select></label>
+                  <label><span>Incident report</span><select name="pir"><option value="">Choose</option><option value="yes">Completed</option><option value="no">Not completed</option><option value="unknown">Not sure</option></select></label>
+                  <label><span>Necessary purchases</span><select name="expenses"><option value="">Choose</option><option value="yes">Yes, with receipts</option><option value="no-receipts">Yes, some receipts missing</option><option value="none">No purchases</option></select></label>
+                </div>
+              </div>
+            </fieldset>
+          </section>
+
+          <section class="form-step" data-step="3">
+            <fieldset>
+              <legend>Case details</legend>
+              <div class="field-grid">
+                <label><span>Full name</span><input name="claimantName" type="text" placeholder="Alex Example" required /></label>
+                <label><span>Email</span><input name="claimantEmail" type="email" placeholder="alex@example.com" required /></label>
+                <label><span>Airline</span><input name="airline" type="text" placeholder="Example Airways" required /></label>
+                <label><span>Booking reference</span><input name="bookingReference" type="text" placeholder="ABC123" required /></label>
+                <label><span>Flight number</span><input name="flightNumber" type="text" placeholder="XY123" required /></label>
+                <label><span>Flight date</span><input name="flightDate" type="date" required /></label>
+                <label><span>From</span><input name="departureAirport" type="text" placeholder="Zurich (ZRH)" required /></label>
+                <label><span>To</span><input name="arrivalAirport" type="text" placeholder="London (LHR)" required /></label>
+              </div>
+              <label class="wide-field"><span>Short factual summary</span><textarea name="caseSummary" rows="5" placeholder="What happened, in date order..." required></textarea></label>
+              <label class="wide-field"><span>Requested result</span><select name="requestedOutcome" required><option value="">Choose</option><option value="compensation">Compensation</option><option value="refund">Refund</option><option value="expenses">Expenses</option><option value="compensation-expenses">Compensation and expenses</option><option value="written-response">Written explanation</option></select></label>
+            </fieldset>
+          </section>
+
+          <section class="form-step" data-step="4">
+            <fieldset>
+              <legend>Your evidence</legend>
+              <div class="evidence-grid">
+                <label><input type="checkbox" name="evidence" value="booking" /><span>Booking confirmation</span></label>
+                <label><input type="checkbox" name="evidence" value="boarding" /><span>Boarding pass</span></label>
+                <label><input type="checkbox" name="evidence" value="messages" /><span>Airline messages</span></label>
+                <label><input type="checkbox" name="evidence" value="receipts" /><span>Receipts</span></label>
+                <label><input type="checkbox" name="evidence" value="photos" /><span>Photos</span></label>
+                <label><input type="checkbox" name="evidence" value="pir" /><span>Baggage report</span></label>
+              </div>
+              <label class="approval-row"><input type="checkbox" name="approved" required /><span>I confirm the information is accurate and I will review the final letter before sending.</span></label>
+            </fieldset>
+          </section>
+
+          <p id="formError" class="form-error" role="alert"></p>
+          <div class="form-actions">
+            <button class="secondary-button" id="backButton" type="button" disabled>Back</button>
+            <button class="primary-button" id="nextButton" type="button">Continue</button>
+          </div>
+        </form>
+
+        <section id="resultCard" class="card result-card hidden" aria-live="polite">
+          <div class="result-top">
+            <div><span class="quiet-label">Initial assessment</span><h2 id="resultHeading">Case ready</h2></div>
+            <div class="score-ring" id="scoreRing"><strong id="readinessScore">0%</strong><span>ready</span></div>
+          </div>
+          <div class="result-grid">
+            <div><span>Possible value</span><strong id="possibleValue">Review</strong></div>
+            <div><span>Route</span><strong id="coverageValue">Review</strong></div>
+          </div>
+          <ul id="resultReasons" class="clean-list"></ul>
+          <div class="result-actions">
+            <button class="primary-button" id="buildLetterButton" type="button">Build claim letter</button>
+            <button class="secondary-button" id="editCaseButton" type="button">Edit</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="app-view" data-view="case">
+        <div class="page-title">
+          <span class="quiet-label">Claim package</span>
+          <h1>Your case</h1>
+          <p id="casePageSubtitle">Complete the case check to create a letter.</p>
+        </div>
+
+        <section class="card case-summary-card">
+          <div class="card-heading">
+            <div><span class="quiet-label">Status</span><h2 id="caseStatusTitle">Not started</h2></div>
+            <span class="status-dot" id="caseStatusDot">New</span>
+          </div>
+          <div class="case-summary-grid">
+            <div><span>Reference</span><strong id="caseReference">—</strong></div>
+            <div><span>Readiness</span><strong id="caseReadiness">—</strong></div>
+            <div><span>Estimate</span><strong id="caseEstimate">—</strong></div>
+          </div>
+          <button class="full-button primary-button" type="button" data-view-link="check" id="caseActionButton">Start case check</button>
+        </section>
+
+        <section id="letterCard" class="card hidden">
+          <div class="card-heading">
+            <div><span class="quiet-label">Document</span><h2>Claim letter</h2></div>
+            <span class="bruce-seal">BR</span>
+          </div>
+          <article id="claimLetter" class="letter-preview"></article>
+          <div class="two-buttons">
+            <button class="secondary-button" id="copyLetterButton" type="button">Copy</button>
+            <button class="primary-button" id="printLetterButton" type="button">Save PDF</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="app-view" data-view="reply">
+        <div class="page-title">
+          <span class="quiet-label">Airline response</span>
+          <h1>What did they say?</h1>
+          <p>Paste the reply. The prototype finds the likely next step.</p>
+        </div>
+        <section class="card">
+          <label class="wide-field"><span>Response</span><textarea id="airlineResponse" rows="10" placeholder="Paste the airline email here..."></textarea></label>
+          <button class="full-button primary-button" id="analyseReplyButton" type="button">Analyse response</button>
+        </section>
+        <section id="replyResult" class="card reply-result hidden">
+          <span class="status-dot" id="replyBadge">Review</span>
+          <h2 id="replyHeading">Response result</h2>
+          <p id="replyText"></p>
+          <div class="suggestion-box"><span>Suggested reply</span><p id="replySuggestion"></p></div>
+        </section>
+      </section>
+
+      <section class="app-view" data-view="more">
+        <div class="page-title">
+          <span class="quiet-label">About</span>
+          <h1>HolidayLawyer.ai</h1>
+          <p>A focused prototype for flight and baggage claims.</p>
+        </div>
+
+        <section class="card bruce-card">
+          <span class="bruce-avatar large-avatar">BR</span>
+          <div><span class="quiet-label">Fixed assistant</span><h2>Bruce Rogers</h2><p>AI Claims Assistant—not a human or licensed lawyer.</p></div>
+        </section>
+
+        <div class="settings-list">
+          <button type="button" id="saveCaseButton"><span>Save case on this device</span><b>→</b></button>
+          <button type="button" id="exportCaseButton"><span>Download case file</span><b>→</b></button>
+          <button type="button" id="clearCaseButton"><span>Reset case</span><b>→</b></button>
+          <a href="privacy.html"><span>Privacy</span><b>→</b></a>
+          <a href="terms.html"><span>Terms</span><b>→</b></a>
+          <a href="https://www.bazl.admin.ch/en/airpassengerrights" target="_blank" rel="noopener"><span>Swiss passenger rights</span><b>↗</b></a>
+          <a href="https://europa.eu/youreurope/citizens/travel/passenger-rights/air/index_en.htm" target="_blank" rel="noopener"><span>EU passenger rights</span><b>↗</b></a>
+        </div>
+
+        <p class="legal-note">The prototype provides general information and document assistance. It does not guarantee compensation or legal success.</p>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="App navigation">
+      <button class="active" type="button" data-view-link="home"><span>⌂</span><small>Home</small></button>
+      <button type="button" data-view-link="check"><span>✓</span><small>Check</small></button>
+      <button type="button" data-view-link="case"><span>▤</span><small>Case</small></button>
+      <button type="button" data-view-link="reply"><span>↪</span><small>Reply</small></button>
+      <button type="button" data-view-link="more"><span>•••</span><small>More</small></button>
+    </nav>
   </div>
 
-  <header class="site-header">
-    <a class="brand" href="#top" aria-label="HolidayLawyer.ai home">
-      <span class="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 48 48">
-          <path d="M24 5 40 12v11c0 10.4-6.5 16.9-16 20-9.5-3.1-16-9.6-16-20V12l16-7Z"/>
-          <path d="M15 25h18M24 15v20"/>
-          <path d="m17 19-4 7h8l-4-7Zm14 0-4 7h8l-4-7Z"/>
-        </svg>
-      </span>
-      <span class="brand-name">HolidayLawyer<span>.ai</span></span>
-    </a>
-
-    <nav class="desktop-nav" aria-label="Primary navigation">
-      <a href="#workspace">Start a case</a>
-      <a href="#features">Features</a>
-      <a href="#how">How it works</a>
-      <a href="#trust">Trust</a>
-    </nav>
-
-    <a class="button button-primary button-small" href="#workspace">Check my case</a>
-  </header>
-
-  <main id="top">
-    <section class="hero shell">
-      <div class="hero-copy">
-        <div class="hero-label">
-          <span class="label-dot"></span>
-          Flight and baggage claims
-        </div>
-
-        <h1>Your holiday was disrupted.<br><span>Build the right claim.</span></h1>
-
-        <p class="hero-lead">
-          Check possible passenger rights, find missing evidence and create a professional
-          claim package—without giving away a percentage of your payment.
-        </p>
-
-        <div class="hero-actions">
-          <a class="button button-primary" href="#workspace">
-            Start free case check
-            <span aria-hidden="true">→</span>
-          </a>
-          <a class="button button-secondary" href="#demo">See the workspace</a>
-        </div>
-
-        <div class="hero-proof">
-          <span><strong>Rule-based</strong> first assessment</span>
-          <span><strong>Local</strong> browser storage</span>
-          <span><strong>User-approved</strong> documents</span>
-        </div>
-      </div>
-
-      <div id="demo" class="hero-dashboard" aria-label="HolidayLawyer case workspace preview">
-        <div class="dashboard-top">
-          <div class="elara-mini">
-            <span class="elara-avatar">BR</span>
-            <div>
-              <strong>Bruce Rogers</strong>
-              <small>AI Claims Assistant</small>
-            </div>
-          </div>
-          <span class="status-pill">Case in progress</span>
-        </div>
-
-        <div class="dashboard-title">
-          <div>
-            <span class="micro-label">Case HL-260716</span>
-            <h2>Flight cancellation</h2>
-          </div>
-          <div class="readiness-ring">
-            <span>82%</span>
-            <small>ready</small>
-          </div>
-        </div>
-
-        <div class="route-preview">
-          <div>
-            <strong>ZRH</strong>
-            <span>Zurich</span>
-          </div>
-          <div class="route-line"><span>✈</span></div>
-          <div class="align-right">
-            <strong>PMI</strong>
-            <span>Palma</span>
-          </div>
-        </div>
-
-        <div class="dashboard-grid">
-          <div class="dashboard-stat">
-            <span>Possible claim</span>
-            <strong>€250</strong>
-            <small>subject to verification</small>
-          </div>
-          <div class="dashboard-stat">
-            <span>Next action</span>
-            <strong>Send claim</strong>
-            <small>with 4 attachments</small>
-          </div>
-        </div>
-
-        <div class="dashboard-checks">
-          <div><span class="check-icon">✓</span><strong>Route coverage checked</strong></div>
-          <div><span class="check-icon">✓</span><strong>Evidence organised</strong></div>
-          <div><span class="check-icon pending">3</span><strong>Missing details found</strong></div>
-        </div>
-
-        <div class="floating-tag tag-one">No commission</div>
-        <div class="floating-tag tag-two">Private draft</div>
-      </div>
-    </section>
-
-    <section class="value-strip">
-      <div class="shell value-grid">
-        <div><strong>01</strong><span>Understand the case</span></div>
-        <div><strong>02</strong><span>Collect the right evidence</span></div>
-        <div><strong>03</strong><span>Generate the claim</span></div>
-        <div><strong>04</strong><span>Analyse the reply</span></div>
-      </div>
-    </section>
-
-    <section id="features" class="section shell">
-      <div class="section-heading split">
-        <div>
-          <span class="eyebrow">Useful, not just impressive</span>
-          <h2>A complete first-claim workspace.</h2>
-        </div>
-        <p>
-          The product does more than write a generic letter. It guides the traveller from
-          the first facts to the airline’s response.
-        </p>
-      </div>
-
-      <div class="feature-grid">
-        <article class="feature-card feature-large">
-          <div class="feature-icon">
-            <svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5M8 17h7"/></svg>
-          </div>
-          <span class="feature-kicker">Case checker</span>
-          <h3>Questions that change with the incident.</h3>
-          <p>
-            Flight delay, cancellation, denied boarding and baggage cases each receive
-            a different evidence and action path.
-          </p>
-          <div class="mini-form-preview">
-            <span>Arrival delay</span>
-            <div><i></i><strong>More than 3 hours</strong><b>Selected</b></div>
-          </div>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-icon sand">
-            <svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
-          </div>
-          <span class="feature-kicker">Evidence checklist</span>
-          <h3>Know what is missing.</h3>
-          <p>Booking, boarding pass, receipts, airline messages and incident reports.</p>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-icon green">
-            <svg viewBox="0 0 24 24"><path d="M3 12h18M12 3v18"/><circle cx="12" cy="12" r="9"/></svg>
-          </div>
-          <span class="feature-kicker">Readiness score</span>
-          <h3>See whether the case is ready.</h3>
-          <p>A practical score based on facts, evidence and provider information.</p>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-icon purple">
-            <svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="m8 13 2.5 2.5L16 10"/></svg>
-          </div>
-          <span class="feature-kicker">Document builder</span>
-          <h3>Generate a structured claim.</h3>
-          <p>Professional wording, evidence list, requested result and next-step notice.</p>
-        </article>
-
-        <article class="feature-card feature-wide">
-          <div class="feature-icon coral">
-            <svg viewBox="0 0 24 24"><path d="M4 5h16v12H8l-4 3z"/><path d="M8 9h8M8 13h5"/></svg>
-          </div>
-          <div>
-            <span class="feature-kicker">Response analyser</span>
-            <h3>Understand what the airline said.</h3>
-            <p>
-              Paste a reply to detect an acceptance, a request for evidence, an extraordinary-circumstances
-              argument or a general rejection—then prepare the next response.
-            </p>
-          </div>
-          <div class="reply-preview">
-            <span>Airline response</span>
-            <p>“We cannot pay due to extraordinary circumstances...”</p>
-            <strong>Ask for specific facts and supporting evidence →</strong>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section id="workspace" class="section workspace-section">
-      <div class="shell">
-        <div class="section-heading centered narrow">
-          <span class="eyebrow">Interactive prototype</span>
-          <h2>Start your travel claim.</h2>
-          <p>The current version runs entirely in your browser. No API key or account is required.</p>
-        </div>
-
-        <div class="workspace">
-          <div class="workspace-progress">
-            <div class="progress-copy">
-              <span id="stepCounter">Step 1 of 5</span>
-              <strong id="stepHeading">Choose the problem</strong>
-            </div>
-            <div class="progress-track"><span id="progressFill"></span></div>
-            <button id="savedCaseButton" class="saved-case-button" type="button">
-              <span>●</span> No saved case
-            </button>
-          </div>
-
-          <div class="workspace-body">
-            <aside class="workspace-aside">
-              <div class="elara-profile">
-                <span class="elara-avatar large">BR</span>
-                <div>
-                  <strong>Bruce Rogers</strong>
-                  <small>AI Claims Assistant</small>
-                </div>
-              </div>
-
-              <p id="elaraMessage">
-                Select what happened. I will build a case path and show you which information matters.
-              </p>
-
-              <div class="assistant-rule">
-                <span>AI disclosure</span>
-                <p>Bruce Rogers is software, not a human lawyer. Every document remains under your control.</p>
-              </div>
-
-              <div class="case-tools">
-                <button id="saveCaseButton" type="button">Save case locally</button>
-                <button id="exportCaseButton" type="button">Download case file</button>
-                <button id="clearCaseButton" type="button">Clear case</button>
-              </div>
-            </aside>
-
-            <div class="workspace-main">
-              <form id="claimWizard" novalidate>
-                <section class="wizard-step active" data-step="1">
-                  <fieldset>
-                    <legend>What happened?</legend>
-                    <p class="question-help">The first version focuses on the two strongest and most structured use cases.</p>
-
-                    <div class="case-choice-grid">
-                      <label class="case-choice">
-                        <input type="radio" name="caseType" value="flight" required />
-                        <span class="case-choice-icon">
-                          <svg viewBox="0 0 24 24"><path d="m3 14 18-9-7 14-3-5-8 0Z"/><path d="m11 14 3-3"/></svg>
-                        </span>
-                        <span>
-                          <strong>Flight disruption</strong>
-                          <small>Delay, cancellation, denied boarding or missed connection.</small>
-                        </span>
-                        <b>Start</b>
-                      </label>
-
-                      <label class="case-choice">
-                        <input type="radio" name="caseType" value="baggage" />
-                        <span class="case-choice-icon sand-bg">
-                          <svg viewBox="0 0 24 24"><rect x="5" y="7" width="14" height="13" rx="2"/><path d="M9 7V5h6v2M9 11v5M15 11v5"/></svg>
-                        </span>
-                        <span>
-                          <strong>Baggage problem</strong>
-                          <small>Lost, delayed or damaged baggage and replacement expenses.</small>
-                        </span>
-                        <b>Start</b>
-                      </label>
-                    </div>
-                  </fieldset>
-                </section>
-
-                <section class="wizard-step" data-step="2">
-                  <fieldset>
-                    <legend>Does the route appear covered?</legend>
-                    <p class="question-help">This is a simplified route test for Switzerland, the EU, Iceland and Norway.</p>
-
-                    <div class="form-grid two">
-                      <label>
-                        <span>Departure area</span>
-                        <select name="departureArea" required>
-                          <option value="">Choose</option>
-                          <option value="covered">Switzerland / EU / EEA</option>
-                          <option value="outside">Outside this area</option>
-                        </select>
-                      </label>
-
-                      <label>
-                        <span>Arrival area</span>
-                        <select name="arrivalArea" required>
-                          <option value="">Choose</option>
-                          <option value="covered">Switzerland / EU / EEA</option>
-                          <option value="outside">Outside this area</option>
-                        </select>
-                      </label>
-                    </div>
-
-                    <div class="form-grid two">
-                      <label>
-                        <span>Operating airline</span>
-                        <select name="carrierArea" required>
-                          <option value="">Choose</option>
-                          <option value="covered">Based in Switzerland / EU / EEA</option>
-                          <option value="outside">Based outside this area</option>
-                          <option value="unknown">Not sure</option>
-                        </select>
-                      </label>
-
-                      <label>
-                        <span>Is Switzerland involved?</span>
-                        <select name="swissCase" required>
-                          <option value="">Choose</option>
-                          <option value="yes">Yes</option>
-                          <option value="no">No</option>
-                          <option value="unknown">Not sure</option>
-                        </select>
-                      </label>
-                    </div>
-                  </fieldset>
-                </section>
-
-                <section class="wizard-step" data-step="3">
-                  <div id="flightIncidentFields">
-                    <fieldset>
-                      <legend>Tell us about the disruption</legend>
-                      <div class="form-grid two">
-                        <label>
-                          <span>Incident</span>
-                          <select name="flightIncident">
-                            <option value="">Choose</option>
-                            <option value="delay">Long arrival delay</option>
-                            <option value="cancellation">Flight cancellation</option>
-                            <option value="denied">Denied boarding</option>
-                            <option value="connection">Missed connection</option>
-                          </select>
-                        </label>
-
-                        <label>
-                          <span>Arrival delay</span>
-                          <select name="arrivalDelay">
-                            <option value="">Choose</option>
-                            <option value="under3">Less than 3 hours</option>
-                            <option value="3to4">3 to 4 hours</option>
-                            <option value="over4">More than 4 hours</option>
-                            <option value="not-arrived">Did not reach destination</option>
-                            <option value="unknown">Not sure</option>
-                          </select>
-                        </label>
-                      </div>
-
-                      <div class="form-grid two">
-                        <label>
-                          <span>Approximate distance</span>
-                          <select name="distance">
-                            <option value="">Choose</option>
-                            <option value="short">Up to 1,500 km</option>
-                            <option value="medium">1,501–3,500 km</option>
-                            <option value="long">More than 3,500 km</option>
-                            <option value="unknown">Not sure</option>
-                          </select>
-                        </label>
-
-                        <label>
-                          <span>Reason provided</span>
-                          <select name="cause">
-                            <option value="">Choose</option>
-                            <option value="airline">Operational / staffing / ordinary technical issue</option>
-                            <option value="extraordinary">Weather / air traffic / security / airport closure</option>
-                            <option value="none">No clear reason</option>
-                            <option value="unknown">Not sure</option>
-                          </select>
-                        </label>
-                      </div>
-                    </fieldset>
-                  </div>
-
-                  <div id="baggageIncidentFields" class="hidden">
-                    <fieldset>
-                      <legend>Tell us about the baggage problem</legend>
-                      <div class="form-grid two">
-                        <label>
-                          <span>Incident</span>
-                          <select name="baggageIncident">
-                            <option value="">Choose</option>
-                            <option value="delayed">Baggage delayed</option>
-                            <option value="lost">Baggage still missing</option>
-                            <option value="damaged">Baggage damaged</option>
-                          </select>
-                        </label>
-
-                        <label>
-                          <span>Property irregularity report</span>
-                          <select name="pir">
-                            <option value="">Choose</option>
-                            <option value="yes">Completed at airport / online</option>
-                            <option value="no">Not completed</option>
-                            <option value="unknown">Not sure</option>
-                          </select>
-                        </label>
-                      </div>
-
-                      <div class="form-grid two">
-                        <label>
-                          <span>How long?</span>
-                          <select name="baggageDays">
-                            <option value="">Choose</option>
-                            <option value="same">Returned same day</option>
-                            <option value="1to5">1–5 days</option>
-                            <option value="6to21">6–21 days</option>
-                            <option value="over21">More than 21 days / still missing</option>
-                          </select>
-                        </label>
-
-                        <label>
-                          <span>Necessary expenses</span>
-                          <select name="expenses">
-                            <option value="">Choose</option>
-                            <option value="yes">Yes, and I have receipts</option>
-                            <option value="no-receipts">Yes, but some receipts are missing</option>
-                            <option value="none">No expenses</option>
-                          </select>
-                        </label>
-                      </div>
-                    </fieldset>
-                  </div>
-                </section>
-
-                <section class="wizard-step" data-step="4">
-                  <fieldset>
-                    <legend>Case and contact details</legend>
-
-                    <div class="form-grid two">
-                      <label>
-                        <span>Claimant full name</span>
-                        <input name="claimantName" type="text" placeholder="Alex Example" required />
-                      </label>
-                      <label>
-                        <span>Email address</span>
-                        <input name="claimantEmail" type="email" placeholder="alex@example.com" required />
-                      </label>
-                    </div>
-
-                    <div class="form-grid two">
-                      <label>
-                        <span>Airline</span>
-                        <input name="airline" type="text" placeholder="Example Airways" required />
-                      </label>
-                      <label>
-                        <span>Booking reference</span>
-                        <input name="bookingReference" type="text" placeholder="ABC123" required />
-                      </label>
-                    </div>
-
-                    <div class="form-grid three">
-                      <label>
-                        <span>Flight number</span>
-                        <input name="flightNumber" type="text" placeholder="XY123" required />
-                      </label>
-                      <label>
-                        <span>Flight date</span>
-                        <input name="flightDate" type="date" required />
-                      </label>
-                      <label>
-                        <span>Number of claimants</span>
-                        <input name="claimantCount" type="number" min="1" max="20" value="1" required />
-                      </label>
-                    </div>
-
-                    <div class="form-grid two">
-                      <label>
-                        <span>Departure airport</span>
-                        <input name="departureAirport" type="text" placeholder="Zurich (ZRH)" required />
-                      </label>
-                      <label>
-                        <span>Final destination</span>
-                        <input name="arrivalAirport" type="text" placeholder="Palma (PMI)" required />
-                      </label>
-                    </div>
-
-                    <label>
-                      <span>What happened? Keep it factual and in date order.</span>
-                      <textarea name="caseSummary" rows="5" placeholder="The flight was scheduled to depart at... The airline informed us that..." required></textarea>
-                    </label>
-
-                    <label>
-                      <span>What result do you want?</span>
-                      <select name="requestedOutcome" required>
-                        <option value="">Choose</option>
-                        <option value="compensation">Compensation</option>
-                        <option value="refund">Ticket refund</option>
-                        <option value="expenses">Reimbursement of documented expenses</option>
-                        <option value="compensation-expenses">Compensation and expenses</option>
-                        <option value="written-response">A written explanation and resolution</option>
-                      </select>
-                    </label>
-                  </fieldset>
-                </section>
-
-                <section class="wizard-step" data-step="5">
-                  <fieldset>
-                    <legend>Which evidence do you have?</legend>
-                    <p class="question-help">Select only items you can actually provide.</p>
-
-                    <div class="evidence-grid">
-                      <label><input type="checkbox" name="evidence" value="booking"><span>Booking confirmation</span></label>
-                      <label><input type="checkbox" name="evidence" value="boarding"><span>Boarding pass</span></label>
-                      <label><input type="checkbox" name="evidence" value="id"><span>Identification copy</span></label>
-                      <label><input type="checkbox" name="evidence" value="messages"><span>Airline messages</span></label>
-                      <label><input type="checkbox" name="evidence" value="receipts"><span>Expense receipts</span></label>
-                      <label><input type="checkbox" name="evidence" value="photos"><span>Photos or damage evidence</span></label>
-                      <label><input type="checkbox" name="evidence" value="pir"><span>Baggage incident report</span></label>
-                      <label><input type="checkbox" name="evidence" value="timeline"><span>Written timeline</span></label>
-                    </div>
-
-                    <label class="authorisation">
-                      <input type="checkbox" name="authorised" required />
-                      <span>
-                        I confirm that the information is accurate. I authorise HolidayLawyer.ai to prepare
-                        a draft, and I will review and approve it myself before sending.
-                      </span>
-                    </label>
-                  </fieldset>
-                </section>
-
-                <p id="wizardError" class="wizard-error" role="alert"></p>
-
-                <div class="wizard-actions">
-                  <button id="backButton" class="button button-secondary" type="button" disabled>Back</button>
-                  <button id="nextButton" class="button button-primary" type="button">Continue</button>
-                </div>
-              </form>
-
-              <section id="assessmentPanel" class="assessment-panel hidden" aria-live="polite">
-                <div class="assessment-top">
-                  <div>
-                    <span class="eyebrow">Initial assessment</span>
-                    <h2 id="assessmentHeading">Case summary</h2>
-                    <p id="assessmentIntro"></p>
-                  </div>
-                  <div class="score-card">
-                    <span id="readinessScore">0%</span>
-                    <small>case readiness</small>
-                  </div>
-                </div>
-
-                <div class="assessment-cards">
-                  <article>
-                    <span>Possible value</span>
-                    <strong id="possibleValue">Needs review</strong>
-                    <small id="valueNote"></small>
-                  </article>
-                  <article>
-                    <span>Route test</span>
-                    <strong id="coverageStatus">Not checked</strong>
-                    <small id="coverageNote"></small>
-                  </article>
-                  <article>
-                    <span>Recommended action</span>
-                    <strong id="nextAction">Prepare claim</strong>
-                    <small id="actionNote"></small>
-                  </article>
-                </div>
-
-                <div class="assessment-lists">
-                  <div>
-                    <h3>Why this result</h3>
-                    <ul id="reasonList"></ul>
-                  </div>
-                  <div>
-                    <h3>Before sending</h3>
-                    <ul id="missingList"></ul>
-                  </div>
-                </div>
-
-                <div id="swissNotice" class="jurisdiction-note hidden">
-                  <strong>Swiss delay-compensation note</strong>
-                  <p>
-                    FOCA states that compensation for long arrival delay is based on European court
-                    rulings and that FOCA cannot fine an airline merely for refusing such delay compensation.
-                    A court may ultimately need to decide a disputed payment.
-                  </p>
-                </div>
-
-                <div class="assessment-actions">
-                  <button id="generateDocumentButton" class="button button-primary" type="button">Generate claim package</button>
-                  <button id="editAnswersButton" class="button button-secondary" type="button">Edit answers</button>
-                </div>
-              </section>
-            </div>
-          </div>
-        </div>
-
-        <section id="documentWorkspace" class="document-workspace hidden">
-          <div class="document-workspace-head">
-            <div>
-              <span class="eyebrow">Claim package</span>
-              <h2>Review, export and send.</h2>
-              <p>Bruce Rogers prepares the draft. The claimant remains the sender and approves the final content.</p>
-            </div>
-            <div class="document-actions">
-              <button id="copyDocumentButton" class="button button-secondary" type="button">Copy text</button>
-              <button id="printDocumentButton" class="button button-primary" type="button">Print / Save PDF</button>
-            </div>
-          </div>
-
-          <div class="document-layout">
-            <article id="claimDocument" class="paper"></article>
-
-            <aside class="package-sidebar">
-              <div class="package-brand">
-                <span class="elara-avatar">BR</span>
-                <div>
-                  <strong>Prepared with Bruce Rogers</strong>
-                  <small>AI Claims Assistant</small>
-                </div>
-              </div>
-
-              <div class="package-section">
-                <span>Case reference</span>
-                <strong id="caseReference">HL-000000</strong>
-              </div>
-
-              <div class="package-section">
-                <span>Suggested attachments</span>
-                <ul id="attachmentList"></ul>
-              </div>
-
-              <div class="package-section">
-                <span>Sending checklist</span>
-                <label><input type="checkbox"> Check every factual statement</label>
-                <label><input type="checkbox"> Attach supporting evidence</label>
-                <label><input type="checkbox"> Keep a sent copy</label>
-                <label><input type="checkbox"> Record the response deadline</label>
-              </div>
-
-              <div class="package-warning">
-                <strong>Not an official signature</strong>
-                <p>The Bruce Rogers mark identifies the drafting tool. It does not replace the claimant’s approval or signature.</p>
-              </div>
-            </aside>
-          </div>
-        </section>
-
-        <section id="responseAnalyser" class="response-analyser hidden">
-          <div class="section-heading split compact">
-            <div>
-              <span class="eyebrow">Response analyser</span>
-              <h2>What did the airline say?</h2>
-            </div>
-            <p>Paste the response. This prototype uses transparent keyword logic; later, AI can improve the explanation.</p>
-          </div>
-
-          <div class="analyser-layout">
-            <div class="analyser-input">
-              <label>
-                <span>Airline response</span>
-                <textarea id="airlineResponse" rows="10" placeholder="Paste the airline’s email here..."></textarea>
-              </label>
-              <button id="analyseResponseButton" class="button button-primary" type="button">Analyse response</button>
-            </div>
-
-            <div id="responseResult" class="response-result empty">
-              <span class="response-badge">Waiting</span>
-              <h3>No response analysed yet</h3>
-              <p>Paste the airline’s message to receive a suggested interpretation and next action.</p>
-              <div id="responseReply" class="suggested-reply hidden"></div>
-            </div>
-          </div>
-        </section>
-      </div>
-    </section>
-
-    <section id="how" class="section shell">
-      <div class="section-heading centered narrow">
-        <span class="eyebrow">The product journey</span>
-        <h2>Designed around what travellers actually need.</h2>
-      </div>
-
-      <div class="journey-steps">
-        <article>
-          <span>01</span>
-          <h3>Check</h3>
-          <p>Route, disruption, timing, reason and case type.</p>
-        </article>
-        <article>
-          <span>02</span>
-          <h3>Prepare</h3>
-          <p>Facts, evidence, missing items and claim value.</p>
-        </article>
-        <article>
-          <span>03</span>
-          <h3>Send</h3>
-          <p>A claimant-approved document with attachments.</p>
-        </article>
-        <article>
-          <span>04</span>
-          <h3>Respond</h3>
-          <p>Interpret the airline reply and decide the next step.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section future-section">
-      <div class="shell future-panel">
-        <div>
-          <span class="eyebrow light">Product roadmap</span>
-          <h2>Focused now. Expandable later.</h2>
-          <p>
-            Flight and baggage claims are the first complete workflows. The same platform can later
-            support hotels, package holidays, insurance and car rentals with separate rule sets.
-          </p>
-        </div>
-
-        <div class="future-list">
-          <span>Hotel & accommodation</span>
-          <span>Package holidays</span>
-          <span>Travel insurance</span>
-          <span>Car rental disputes</span>
-        </div>
-      </div>
-    </section>
-
-    <section id="trust" class="section shell">
-      <div class="trust-grid">
-        <div class="trust-copy">
-          <span class="eyebrow">Trust architecture</span>
-          <h2>Professional without pretending.</h2>
-          <p>
-            HolidayLawyer.ai is an AI-assisted claims product—not a fictional law firm.
-            The usefulness comes from the workflow, evidence and clear documents.
-          </p>
-        </div>
-
-        <div class="trust-items">
-          <article>
-            <strong>AI is disclosed</strong>
-            <p>Bruce Rogers is always identified as software.</p>
-          </article>
-          <article>
-            <strong>The claimant is the sender</strong>
-            <p>The person with the claim reviews and approves the document.</p>
-          </article>
-          <article>
-            <strong>Rules control key outcomes</strong>
-            <p>AI will not be allowed to invent compensation amounts or route coverage.</p>
-          </article>
-          <article>
-            <strong>Privacy is visible</strong>
-            <p>The current demo stores cases only in the user’s browser.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="sources-section">
-      <div class="shell sources-inner">
-        <div>
-          <span class="eyebrow">Official reference points</span>
-          <p>
-            The prototype’s simplified flight logic is based on public passenger-rights information
-            from the Swiss Federal Office of Civil Aviation and European Union sources.
-          </p>
-        </div>
-        <div class="source-links">
-          <a href="https://www.bazl.admin.ch/en/airpassengerrights" target="_blank" rel="noopener">Swiss FOCA passenger rights ↗</a>
-          <a href="https://europa.eu/youreurope/citizens/travel/passenger-rights/air/index_en.htm" target="_blank" rel="noopener">EU passenger rights ↗</a>
-          <a href="privacy.html">Privacy information →</a>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="shell footer-inner">
-      <div>
-        <a class="brand footer-brand" href="#top">
-          <span class="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 48 48">
-              <path d="M24 5 40 12v11c0 10.4-6.5 16.9-16 20-9.5-3.1-16-9.6-16-20V12l16-7Z"/>
-              <path d="M15 25h18M24 15v20"/>
-              <path d="m17 19-4 7h8l-4-7Zm14 0-4 7h8l-4-7Z"/>
-            </svg>
-          </span>
-          <span class="brand-name">HolidayLawyer<span>.ai</span></span>
-        </a>
-        <p>
-          AI-assisted travel claim preparation. Not a law firm, court, government authority
-          or guarantee of payment.
-        </p>
-      </div>
-
-      <div class="footer-links">
-        <a href="#workspace">Start a case</a>
-        <a href="#trust">Trust</a>
-        <a href="privacy.html">Privacy</a>
-        <a href="terms.html">Terms</a>
-      </div>
-
-      <span class="copyright">© <span id="year"></span> HolidayLawyer.ai</span>
-    </div>
-  </footer>
-
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="app.js"></script>
 </body>
 </html>
