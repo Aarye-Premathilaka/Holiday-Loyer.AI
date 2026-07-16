@@ -507,7 +507,7 @@ function buildClaimDocument() {
         <strong>HolidayLawyer.ai</strong>
         <span>AI-assisted travel claim preparation</span>
       </div>
-      <span class="letter-mark">E</span>
+      <span class="letter-mark">BR</span>
     </div>
 
     <div class="letter-meta">
@@ -582,14 +582,14 @@ function buildClaimDocument() {
         Claimant
       </div>
       <div class="ai-prepared">
-        Prepared with Elara<br>
+        Prepared with Bruce Rogers<br>
         AI Claims Assistant<br>
         User reviewed and approved
       </div>
     </div>
 
     <p class="document-notice">
-      This draft was generated from information entered by the claimant. Elara is an
+      This draft was generated from information entered by the claimant. Bruce Rogers is an
       artificial-intelligence claims assistant, not a human or licensed lawyer. HolidayLawyer.ai
       is not a law firm, court or government authority and does not guarantee payment or legal success.
     </p>

@@ -20,7 +20,7 @@ Hotel, package-holiday, insurance and car-rental workflows remain on the roadmap
 - Case readiness score
 - Missing-evidence checklist
 - Professional claim document generator
-- Fixed Elara AI Claims Assistant identity
+- Fixed Bruce Rogers AI Claims Assistant identity
 - Claimant-controlled signature and approval
 - Print / Save as PDF
 - Copy document
@@ -55,13 +55,13 @@ Commit and push. GitHub Pages should publish the new version automatically.
 
 ## Important product positioning
 
-Elara is:
+Bruce Rogers is:
 
 - an AI Claims Assistant
 - a drafting and explanation interface
 - permanently identified as software
 
-Elara is not:
+Bruce Rogers is not:
 
 - a human lawyer
 - a licensed attorney
