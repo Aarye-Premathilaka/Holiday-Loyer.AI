@@ -1,0 +1,42 @@
+name: Deploy compact HolidayLawyer design
+
+on:
+  push:
+    paths:
+      - .github/workflows/deploy-compact-design.yml
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build compact app files
+        shell: python
+        run: |
+          import base64
+          import io
+          import pathlib
+          import zipfile
+
+          chunk_dir = pathlib.Path('.deploy/compact')
+          payload = ''.join(
+              path.read_text().strip()
+              for path in sorted(chunk_dir.glob('chunk*.txt'))
+          )
+
+          with zipfile.ZipFile(io.BytesIO(base64.b64decode(payload))) as archive:
+              archive.extractall(pathlib.Path('.'))
+
+      - name: Commit compact redesign
+        run: |
+          rm -rf .deploy
+          rm -f .github/workflows/deploy-compact-design.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Redesign website as compact app"
+          git push
