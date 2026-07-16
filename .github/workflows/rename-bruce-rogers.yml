@@ -1,0 +1,57 @@
+name: Rename AI assistant to Bruce Rogers
+
+on:
+  push:
+    paths:
+      - .github/workflows/rename-bruce-rogers.yml
+
+permissions:
+  contents: write
+
+jobs:
+  rename-assistant:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Update assistant identity
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          for filename in ["index.html", "app.js", "terms.html", "README.md"]:
+              path = Path(filename)
+              if not path.exists():
+                  continue
+              text = path.read_text(encoding="utf-8")
+              text = text.replace("Elara", "Bruce Rogers")
+              path.write_text(text, encoding="utf-8")
+
+          index = Path("index.html")
+          if index.exists():
+              text = index.read_text(encoding="utf-8")
+              text = text.replace('<span class="elara-avatar">E</span>', '<span class="elara-avatar">BR</span>')
+              text = text.replace('<span class="elara-avatar large">E</span>', '<span class="elara-avatar large">BR</span>')
+              index.write_text(text, encoding="utf-8")
+
+          app = Path("app.js")
+          if app.exists():
+              text = app.read_text(encoding="utf-8")
+              text = text.replace('<span class="letter-mark">E</span>', '<span class="letter-mark">BR</span>')
+              app.write_text(text, encoding="utf-8")
+          PY
+
+      - name: Commit changes
+        shell: bash
+        run: |
+          git config user.name "HolidayLawyer AI Updater"
+          git config user.email "actions@users.noreply.github.com"
+          git add index.html app.js terms.html README.md
+          if git diff --cached --quiet; then
+            echo "No changes required"
+          else
+            git commit -m "Rename AI assistant to Bruce Rogers"
+            git push
+          fi
