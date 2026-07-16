@@ -1,1 +1,283 @@
-PLACEHOLDER
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f7f8fb" />
+  <meta name="description" content="HolidayLawyer.ai helps travellers check flight and baggage claims, organise evidence and prepare a clear claim letter." />
+  <title>HolidayLawyer.ai</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/jpeg" href="holidaylawyer-logo.jpg" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <button class="brand" type="button" data-view-link="home" aria-label="HolidayLawyer.ai home">
+        <img class="brand-logo" src="holidaylawyer-logo.jpg" alt="" aria-hidden="true" />
+        <span>HolidayLawyer<span class="brand-ai">.ai</span></span>
+      </button>
+      <button class="bruce-chip" type="button" data-view-link="more" aria-label="About Bruce Rogers">
+        <span class="bruce-avatar">BR</span>
+        <span><strong>Bruce Rogers</strong><small>AI Claims Assistant</small></span>
+      </button>
+    </header>
+
+    <main>
+      <section class="app-view active" data-view="home">
+        <div class="intro-card">
+          <span class="quiet-label">Travel claim assistant</span>
+          <h1>What went wrong?</h1>
+          <p>Check the case, collect evidence and prepare a clear first claim.</p>
+        </div>
+
+        <div class="quick-grid">
+          <button class="quick-card" type="button" data-start-case="flight">
+            <span class="quick-icon blue-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="m3 14 18-9-7 14-3-5-8 0Z"/><path d="m11 14 3-3"/></svg>
+            </span>
+            <span><strong>Flight problem</strong><small>Delay, cancellation or denied boarding</small></span>
+            <b>→</b>
+          </button>
+
+          <button class="quick-card" type="button" data-start-case="baggage">
+            <span class="quick-icon sand-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><rect x="5" y="7" width="14" height="13" rx="2"/><path d="M9 7V5h6v2M9 11v5M15 11v5"/></svg>
+            </span>
+            <span><strong>Baggage problem</strong><small>Delayed, lost or damaged baggage</small></span>
+            <b>→</b>
+          </button>
+        </div>
+
+        <section class="card saved-card" id="homeCaseCard">
+          <div class="card-heading">
+            <div>
+              <span class="quiet-label">Your case</span>
+              <h2 id="homeCaseTitle">No active case</h2>
+            </div>
+            <span class="status-dot" id="homeCaseStatus">New</span>
+          </div>
+          <p id="homeCaseText">Start with a short check. Your progress can stay on this device.</p>
+          <button class="full-button secondary-button" type="button" data-view-link="check" id="continueCaseButton">Start a case</button>
+        </section>
+
+        <div class="mini-stats">
+          <div><strong>No fee</strong><span>for the prototype</span></div>
+          <div><strong>Local</strong><span>browser storage</span></div>
+          <div><strong>You approve</strong><span>before sending</span></div>
+        </div>
+      </section>
+
+      <section class="app-view" data-view="check">
+        <div class="page-title">
+          <button class="back-link" type="button" data-view-link="home">← Home</button>
+          <span class="quiet-label">Case check</span>
+          <h1 id="checkTitle">Build your case</h1>
+          <p id="checkSubtitle">Only the details that affect the first claim.</p>
+        </div>
+
+        <div class="progress-block">
+          <div><span id="stepLabel">1 of 4</span><strong id="stepName">Problem</strong></div>
+          <div class="progress-line"><span id="progressFill"></span></div>
+        </div>
+
+        <form id="caseForm" class="form-card" novalidate>
+          <section class="form-step active" data-step="1">
+            <fieldset>
+              <legend>Choose the problem</legend>
+              <div class="choice-stack">
+                <label class="choice-row">
+                  <input type="radio" name="caseType" value="flight" required />
+                  <span class="choice-symbol blue-icon">
+                    <svg viewBox="0 0 24 24"><path d="m3 14 18-9-7 14-3-5-8 0Z"/><path d="m11 14 3-3"/></svg>
+                  </span>
+                  <span><strong>Flight problem</strong><small>Delay, cancellation, denied boarding</small></span>
+                  <i></i>
+                </label>
+                <label class="choice-row">
+                  <input type="radio" name="caseType" value="baggage" />
+                  <span class="choice-symbol sand-icon">
+                    <svg viewBox="0 0 24 24"><rect x="5" y="7" width="14" height="13" rx="2"/><path d="M9 7V5h6v2M9 11v5M15 11v5"/></svg>
+                  </span>
+                  <span><strong>Baggage problem</strong><small>Delayed, lost or damaged</small></span>
+                  <i></i>
+                </label>
+              </div>
+            </fieldset>
+          </section>
+
+          <section class="form-step" data-step="2">
+            <fieldset>
+              <legend>What happened?</legend>
+              <div class="field-grid">
+                <label><span>Departure area</span><select name="departureArea" required><option value="">Choose</option><option value="covered">Switzerland / EU / EEA</option><option value="outside">Outside this area</option></select></label>
+                <label><span>Arrival area</span><select name="arrivalArea" required><option value="">Choose</option><option value="covered">Switzerland / EU / EEA</option><option value="outside">Outside this area</option></select></label>
+                <label><span>Operating airline</span><select name="carrierArea" required><option value="">Choose</option><option value="covered">Based in Switzerland / EU / EEA</option><option value="outside">Based outside this area</option><option value="unknown">Not sure</option></select></label>
+              </div>
+
+              <div id="flightFields" class="conditional-fields">
+                <div class="field-grid">
+                  <label><span>Incident</span><select name="flightIncident"><option value="">Choose</option><option value="delay">Arrival delay</option><option value="cancellation">Cancellation</option><option value="denied">Denied boarding</option><option value="connection">Missed connection</option></select></label>
+                  <label><span>Arrival delay</span><select name="arrivalDelay"><option value="">Choose</option><option value="under3">Under 3 hours</option><option value="3to4">3–4 hours</option><option value="over4">More than 4 hours</option><option value="not-arrived">Did not arrive</option><option value="unknown">Not sure</option></select></label>
+                  <label><span>Distance</span><select name="distance"><option value="">Choose</option><option value="short">Up to 1,500 km</option><option value="medium">1,501–3,500 km</option><option value="long">More than 3,500 km</option><option value="unknown">Not sure</option></select></label>
+                  <label><span>Reason given</span><select name="cause"><option value="">Choose</option><option value="airline">Operational / staffing / technical</option><option value="extraordinary">Weather / air traffic / security</option><option value="none">No clear reason</option><option value="unknown">Not sure</option></select></label>
+                </div>
+              </div>
+
+              <div id="baggageFields" class="conditional-fields hidden">
+                <div class="field-grid">
+                  <label><span>Incident</span><select name="baggageIncident"><option value="">Choose</option><option value="delayed">Delayed baggage</option><option value="lost">Still missing</option><option value="damaged">Damaged baggage</option></select></label>
+                  <label><span>Incident report</span><select name="pir"><option value="">Choose</option><option value="yes">Completed</option><option value="no">Not completed</option><option value="unknown">Not sure</option></select></label>
+                  <label><span>Necessary purchases</span><select name="expenses"><option value="">Choose</option><option value="yes">Yes, with receipts</option><option value="no-receipts">Yes, some receipts missing</option><option value="none">No purchases</option></select></label>
+                </div>
+              </div>
+            </fieldset>
+          </section>
+
+          <section class="form-step" data-step="3">
+            <fieldset>
+              <legend>Case details</legend>
+              <div class="field-grid">
+                <label><span>Full name</span><input name="claimantName" type="text" placeholder="Alex Example" required /></label>
+                <label><span>Email</span><input name="claimantEmail" type="email" placeholder="alex@example.com" required /></label>
+                <label><span>Airline</span><input name="airline" type="text" placeholder="Example Airways" required /></label>
+                <label><span>Booking reference</span><input name="bookingReference" type="text" placeholder="ABC123" required /></label>
+                <label><span>Flight number</span><input name="flightNumber" type="text" placeholder="XY123" required /></label>
+                <label><span>Flight date</span><input name="flightDate" type="date" required /></label>
+                <label><span>From</span><input name="departureAirport" type="text" placeholder="Zurich (ZRH)" required /></label>
+                <label><span>To</span><input name="arrivalAirport" type="text" placeholder="London (LHR)" required /></label>
+              </div>
+              <label class="wide-field"><span>Short factual summary</span><textarea name="caseSummary" rows="5" placeholder="What happened, in date order..." required></textarea></label>
+              <label class="wide-field"><span>Requested result</span><select name="requestedOutcome" required><option value="">Choose</option><option value="compensation">Compensation</option><option value="refund">Refund</option><option value="expenses">Expenses</option><option value="compensation-expenses">Compensation and expenses</option><option value="written-response">Written explanation</option></select></label>
+            </fieldset>
+          </section>
+
+          <section class="form-step" data-step="4">
+            <fieldset>
+              <legend>Your evidence</legend>
+              <div class="evidence-grid">
+                <label><input type="checkbox" name="evidence" value="booking" /><span>Booking confirmation</span></label>
+                <label><input type="checkbox" name="evidence" value="boarding" /><span>Boarding pass</span></label>
+                <label><input type="checkbox" name="evidence" value="messages" /><span>Airline messages</span></label>
+                <label><input type="checkbox" name="evidence" value="receipts" /><span>Receipts</span></label>
+                <label><input type="checkbox" name="evidence" value="photos" /><span>Photos</span></label>
+                <label><input type="checkbox" name="evidence" value="pir" /><span>Baggage report</span></label>
+              </div>
+              <label class="approval-row"><input type="checkbox" name="approved" required /><span>I confirm the information is accurate and I will review the final letter before sending.</span></label>
+            </fieldset>
+          </section>
+
+          <p id="formError" class="form-error" role="alert"></p>
+          <div class="form-actions">
+            <button class="secondary-button" id="backButton" type="button" disabled>Back</button>
+            <button class="primary-button" id="nextButton" type="button">Continue</button>
+          </div>
+        </form>
+
+        <section id="resultCard" class="card result-card hidden" aria-live="polite">
+          <div class="result-top">
+            <div><span class="quiet-label">Initial assessment</span><h2 id="resultHeading">Case ready</h2></div>
+            <div class="score-ring" id="scoreRing"><strong id="readinessScore">0%</strong><span>ready</span></div>
+          </div>
+          <div class="result-grid">
+            <div><span>Possible value</span><strong id="possibleValue">Review</strong></div>
+            <div><span>Route</span><strong id="coverageValue">Review</strong></div>
+          </div>
+          <ul id="resultReasons" class="clean-list"></ul>
+          <div class="result-actions">
+            <button class="primary-button" id="buildLetterButton" type="button">Build claim letter</button>
+            <button class="secondary-button" id="editCaseButton" type="button">Edit</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="app-view" data-view="case">
+        <div class="page-title">
+          <span class="quiet-label">Claim package</span>
+          <h1>Your case</h1>
+          <p id="casePageSubtitle">Complete the case check to create a letter.</p>
+        </div>
+
+        <section class="card case-summary-card">
+          <div class="card-heading">
+            <div><span class="quiet-label">Status</span><h2 id="caseStatusTitle">Not started</h2></div>
+            <span class="status-dot" id="caseStatusDot">New</span>
+          </div>
+          <div class="case-summary-grid">
+            <div><span>Reference</span><strong id="caseReference">—</strong></div>
+            <div><span>Readiness</span><strong id="caseReadiness">—</strong></div>
+            <div><span>Estimate</span><strong id="caseEstimate">—</strong></div>
+          </div>
+          <button class="full-button primary-button" type="button" data-view-link="check" id="caseActionButton">Start case check</button>
+        </section>
+
+        <section id="letterCard" class="card hidden">
+          <div class="card-heading">
+            <div><span class="quiet-label">Document</span><h2>Claim letter</h2></div>
+            <span class="bruce-seal">BR</span>
+          </div>
+          <article id="claimLetter" class="letter-preview"></article>
+          <div class="two-buttons">
+            <button class="secondary-button" id="copyLetterButton" type="button">Copy</button>
+            <button class="primary-button" id="printLetterButton" type="button">Save PDF</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="app-view" data-view="reply">
+        <div class="page-title">
+          <span class="quiet-label">Airline response</span>
+          <h1>What did they say?</h1>
+          <p>Paste the reply. The prototype finds the likely next step.</p>
+        </div>
+        <section class="card">
+          <label class="wide-field"><span>Response</span><textarea id="airlineResponse" rows="10" placeholder="Paste the airline email here..."></textarea></label>
+          <button class="full-button primary-button" id="analyseReplyButton" type="button">Analyse response</button>
+        </section>
+        <section id="replyResult" class="card reply-result hidden">
+          <span class="status-dot" id="replyBadge">Review</span>
+          <h2 id="replyHeading">Response result</h2>
+          <p id="replyText"></p>
+          <div class="suggestion-box"><span>Suggested reply</span><p id="replySuggestion"></p></div>
+        </section>
+      </section>
+
+      <section class="app-view" data-view="more">
+        <div class="page-title about-title">
+          <img class="about-logo" src="holidaylawyer-logo.jpg" alt="HolidayLawyer.ai logo" />
+          <span class="quiet-label">About</span>
+          <h1>HolidayLawyer.ai</h1>
+          <p>A focused prototype for flight and baggage claims.</p>
+        </div>
+
+        <section class="card bruce-card">
+          <span class="bruce-avatar large-avatar">BR</span>
+          <div><span class="quiet-label">Fixed assistant</span><h2>Bruce Rogers</h2><p>AI Claims Assistant—not a human or licensed lawyer.</p></div>
+        </section>
+
+        <div class="settings-list">
+          <button type="button" id="saveCaseButton"><span>Save case on this device</span><b>→</b></button>
+          <button type="button" id="exportCaseButton"><span>Download case file</span><b>→</b></button>
+          <button type="button" id="clearCaseButton"><span>Reset case</span><b>→</b></button>
+          <a href="privacy.html"><span>Privacy</span><b>→</b></a>
+          <a href="terms.html"><span>Terms</span><b>→</b></a>
+          <a href="https://www.bazl.admin.ch/en/airpassengerrights" target="_blank" rel="noopener"><span>Swiss passenger rights</span><b>↗</b></a>
+          <a href="https://europa.eu/youreurope/citizens/travel/passenger-rights/air/index_en.htm" target="_blank" rel="noopener"><span>EU passenger rights</span><b>↗</b></a>
+        </div>
+
+        <p class="legal-note">The prototype provides general information and document assistance. It does not guarantee compensation or legal success.</p>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="App navigation">
+      <button class="active" type="button" data-view-link="home"><span>⌂</span><small>Home</small></button>
+      <button type="button" data-view-link="check"><span>✓</span><small>Check</small></button>
+      <button type="button" data-view-link="case"><span>▤</span><small>Case</small></button>
+      <button type="button" data-view-link="reply"><span>↪</span><small>Reply</small></button>
+      <button type="button" data-view-link="more"><span>•••</span><small>More</small></button>
+    </nav>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
