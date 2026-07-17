@@ -1,0 +1,34 @@
+name: Connect AI script
+
+on:
+  push:
+    paths:
+      - '.github/workflows/connect-ai.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add AI script to website
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text()
+          marker = '  <script src="app.js"></script>'
+          ai = '  <script src="ai.js"></script>'
+          if ai not in s:
+              s = s.replace(marker, marker + '\n' + ai)
+          p.write_text(s)
+          PY
+      - name: Commit change
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Connect AI backend to website" || exit 0
+          git push
