@@ -2,40 +2,39 @@
   "use strict";
 
   const API_URL = "https://holidaylawyer-api.aarye-premathilaka.workers.dev";
-  const statusLabels = {
-    verified_by_public_source: ["Verified", "verified"],
-    supported_by_user_document: ["Document", "document"],
-    user_provided_only: ["User only", "user-only"],
-    conflicting: ["Conflict", "conflict"],
-    unable_to_verify: ["Unverified", "unknown"]
+  const ASSET_VERSION = "20260719-2";
+
+  const statusConfig = {
+    verified_by_public_source: { label: "Verified", className: "verified", icon: "✓" },
+    supported_by_user_document: { label: "In document", className: "document", icon: "▤" },
+    user_provided_only: { label: "User statement", className: "user-only", icon: "i" },
+    conflicting: { label: "Conflict", className: "conflict", icon: "!" },
+    unable_to_verify: { label: "Unverified", className: "unknown", icon: "?" }
   };
 
   let latestAiResponse = null;
 
-  function injectStyles() {
-    const style = document.createElement("style");
-    style.textContent = `
-      .ai-panel{margin:18px 0 4px;padding:18px;border:1px solid #dbe6f2;border-radius:18px;background:linear-gradient(180deg,#f8fbff,#fff)}
-      .ai-panel.hidden{display:none}.ai-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
-      .ai-head h3{margin:2px 0 0;font-size:1.05rem}.ai-head p{margin:4px 0 0;color:var(--muted,#687386);font-size:.9rem}
-      .ai-live{display:inline-flex;align-items:center;gap:7px;font-size:.78rem;font-weight:700;color:#1f5f9e;background:#eaf4ff;padding:6px 9px;border-radius:999px;white-space:nowrap}
-      .ai-live::before{content:"";width:7px;height:7px;border-radius:50%;background:#2c7be5;box-shadow:0 0 0 4px rgba(44,123,229,.12)}
-      .ai-loading{display:grid;gap:9px;color:#536174}.ai-loading span{display:flex;align-items:center;gap:9px}.ai-loading span::before{content:"";width:14px;height:14px;border:2px solid #bad0e8;border-top-color:#2c7be5;border-radius:50%;animation:aiSpin 1s linear infinite}
-      @keyframes aiSpin{to{transform:rotate(360deg)}}
-      .ai-summary{margin:0 0 14px;line-height:1.55}.ai-section{margin-top:16px}.ai-section h4{margin:0 0 9px;font-size:.92rem}.ai-list{display:grid;gap:8px;margin:0;padding:0;list-style:none}
-      .ai-point{padding:11px 12px;border:1px solid #e3e9f0;border-radius:13px;background:#fff}.ai-point-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}.ai-point strong{font-size:.9rem}.ai-point p{margin:3px 0;color:#5f6b7a;font-size:.84rem;line-height:1.45}
-      .ai-badge{display:inline-flex;padding:4px 7px;border-radius:999px;font-size:.69rem;font-weight:800;letter-spacing:.01em}.ai-badge.verified{background:#e7f7ee;color:#176b3a}.ai-badge.document{background:#eef1ff;color:#3b4ea3}.ai-badge.user-only{background:#fff5db;color:#815d00}.ai-badge.conflict{background:#ffe9e8;color:#9d2c28}.ai-badge.unknown{background:#eef1f4;color:#59636e}
-      .ai-rule{padding:11px 12px;border-left:3px solid #2c7be5;background:#f6f9fc;border-radius:0 12px 12px 0}.ai-rule strong{display:block}.ai-rule small{color:#657183}.ai-rule p{margin:5px 0 0;line-height:1.45;font-size:.86rem}
-      .ai-simple-list{margin:0;padding-left:20px}.ai-simple-list li{margin:6px 0;line-height:1.45}.ai-sources a{display:block;padding:9px 10px;margin:7px 0;border:1px solid #e0e7ef;border-radius:10px;background:#fff;text-decoration:none;color:#1f5f9e;font-size:.86rem;overflow-wrap:anywhere}.ai-sources a:hover{text-decoration:underline}
-      .ai-warning{padding:11px 12px;border-radius:12px;background:#fff6e1;color:#704f00;font-size:.86rem;line-height:1.45}.ai-error{padding:12px;border-radius:12px;background:#fff0ef;color:#8f2925;line-height:1.5}.ai-error-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
-      .ai-meta{margin-top:14px;padding-top:11px;border-top:1px solid #e3e9f0;color:#748091;font-size:.76rem}.ai-letter-subject{padding:12px;border-radius:12px;background:#f2f6fb;margin-bottom:18px}.ai-letter-body{white-space:pre-wrap;line-height:1.65}.ai-letter-sources{margin-top:20px;padding-top:14px;border-top:1px solid #dfe5ec}.ai-letter-sources a{overflow-wrap:anywhere}
-      @media(max-width:560px){.ai-head{flex-direction:column}.ai-live{align-self:flex-start}.ai-point-top{align-items:flex-start;flex-direction:column}.ai-panel{padding:15px}}
-    `;
-    document.head.appendChild(style);
+  function escape(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function ensureStylesheet() {
+    if (document.querySelector('link[data-holidaylawyer-ai-styles]')) return;
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = `./ai-styles.css?v=${ASSET_VERSION}`;
+    link.dataset.holidaylawyerAiStyles = "true";
+    document.head.appendChild(link);
   }
 
   function getFormValue(name) {
-    return document.getElementById("caseForm")?.elements[name]?.value?.trim?.() || "";
+    const value = document.getElementById("caseForm")?.elements[name]?.value;
+    return typeof value === "string" ? value.trim() : "";
   }
 
   function selectedCaseType() {
@@ -87,21 +86,28 @@
   function ensurePanel() {
     let panel = document.getElementById("aiResearchPanel");
     if (panel) return panel;
+
     panel = document.createElement("section");
     panel.id = "aiResearchPanel";
     panel.className = "ai-panel hidden";
-    const resultActions = document.querySelector("#resultCard .result-actions");
-    resultActions?.parentNode?.insertBefore(panel, resultActions);
+
+    const resultCard = document.getElementById("resultCard");
+    const actions = resultCard?.querySelector(".result-actions");
+    if (resultCard && actions) resultCard.insertBefore(panel, actions);
     return panel;
   }
 
-  function setLoading() {
-    const panel = ensurePanel();
-    panel.classList.remove("hidden");
-    panel.innerHTML = `
-      <div class="ai-head"><div><span class="quiet-label">Live AI research</span><h3>Bruce is checking the case</h3><p>This can take around 10–30 seconds.</p></div><span class="ai-live">Gemini + web search</span></div>
-      <div class="ai-loading"><span>Checking the flight and airline details</span><span>Finding relevant official rules</span><span>Building an evidence-based claim</span></div>
-    `;
+  function displayDate(value) {
+    if (!value) return "Not supplied";
+    try {
+      return new Intl.DateTimeFormat("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+      }).format(new Date(`${value}T12:00:00`));
+    } catch {
+      return value;
+    }
   }
 
   function safeUrl(value) {
@@ -113,60 +119,247 @@
     }
   }
 
-  function listHtml(items, emptyText) {
-    if (!Array.isArray(items) || items.length === 0) return `<p class="ai-warning">${escapeHtml(emptyText)}</p>`;
-    return `<ul class="ai-simple-list">${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+  function sourceDomain(value) {
+    try {
+      return new URL(value).hostname.replace(/^www\./, "");
+    } catch {
+      return "Official web source";
+    }
+  }
+
+  function setLoading() {
+    const panel = ensurePanel();
+    panel.classList.remove("hidden");
+    panel.innerHTML = `
+      <div class="ai-loading-card">
+        <div class="ai-bruce-identity" style="margin-bottom:16px">
+          <span class="ai-bruce-mark">BR</span>
+          <div><strong style="color:#17233a">Bruce Rogers</strong><span style="color:#718096">AI Claims Assistant</span></div>
+        </div>
+        <h3>Researching this case</h3>
+        <p>Bruce is comparing the entered details with public information and official passenger-rights sources.</p>
+        <div class="ai-loading-steps">
+          <div class="ai-loading-row"><span class="ai-spinner"></span><span>Checking the flight, route and airline</span></div>
+          <div class="ai-loading-row"><span class="ai-spinner"></span><span>Finding the relevant official rules</span></div>
+          <div class="ai-loading-row"><span class="ai-spinner"></span><span>Preparing the evidence review and claim email</span></div>
+        </div>
+      </div>
+    `;
+    panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function listMarkup(items, emptyText) {
+    if (!Array.isArray(items) || items.length === 0) {
+      return `<p class="ai-empty">${escape(emptyText)}</p>`;
+    }
+    return `<ul class="ai-clean-list">${items.map((item) => `<li>${escape(item)}</li>`).join("")}</ul>`;
+  }
+
+  function renderVerification(points) {
+    if (!Array.isArray(points) || points.length === 0) {
+      return `<p class="ai-empty">No verification points were returned.</p>`;
+    }
+
+    return `<ul class="ai-verification-list">${points.map((point) => {
+      const config = statusConfig[point.status] || statusConfig.unable_to_verify;
+      return `
+        <li class="ai-point ${config.className}">
+          <span class="ai-point-icon" aria-hidden="true">${config.icon}</span>
+          <div class="ai-point-content">
+            <div class="ai-point-top">
+              <div class="ai-point-title">
+                <strong>${escape(point.field || "Case fact")}</strong>
+                <span>${escape(point.value || "Not available")}</span>
+              </div>
+              <span class="ai-badge ${config.className}">${config.label}</span>
+            </div>
+            <p>${escape(point.evidence || "No supporting explanation was returned.")}</p>
+          </div>
+        </li>`;
+    }).join("")}</ul>`;
+  }
+
+  function renderRules(rules) {
+    if (!Array.isArray(rules) || rules.length === 0) {
+      return `<p class="ai-empty">No specific legal rule was safely identified.</p>`;
+    }
+
+    return `<div class="ai-rule-list">${rules.map((rule) => `
+      <article class="ai-rule-card">
+        <div class="ai-rule-top">
+          <div class="ai-rule-title">
+            <strong>${escape(rule.rule || "Passenger-rights rule")}</strong>
+            <span>${escape(rule.source_organisation || "Official source")}</span>
+          </div>
+          ${rule.article ? `<span class="ai-rule-article">${escape(rule.article)}</span>` : ""}
+        </div>
+        <p>${escape(rule.explanation || "")}</p>
+      </article>`).join("")}</div>`;
+  }
+
+  function renderSources(sources) {
+    const usable = Array.isArray(sources)
+      ? sources.map((source) => ({ ...source, safeUrl: safeUrl(source.url) })).filter((source) => source.safeUrl)
+      : [];
+
+    if (usable.length === 0) {
+      return `<p class="ai-empty">No clickable sources were returned. Verify the assessment against official pages before using it.</p>`;
+    }
+
+    return `<div class="ai-source-list">${usable.map((source, index) => `
+      <a class="ai-source-card" href="${escape(source.safeUrl)}" target="_blank" rel="noopener noreferrer">
+        <span class="ai-source-number">${index + 1}</span>
+        <span class="ai-source-text">
+          <strong>${escape(source.title || "Official web source")}</strong>
+          <span>${escape(sourceDomain(source.safeUrl))}</span>
+        </span>
+        <span class="ai-source-arrow">↗</span>
+      </a>`).join("")}</div>`;
   }
 
   function renderAiResult(payload) {
     const panel = ensurePanel();
     const analysis = payload.analysis || {};
+    const confidence = ["high", "medium", "low"].includes(analysis.confidence) ? analysis.confidence : "medium";
     const points = Array.isArray(analysis.verification_points) ? analysis.verification_points : [];
     const rules = Array.isArray(analysis.applicable_rules) ? analysis.applicable_rules : [];
     const sources = Array.isArray(payload.sources) ? payload.sources : [];
-
-    const pointsHtml = points.map((point) => {
-      const [label, className] = statusLabels[point.status] || ["Review", "unknown"];
-      return `<li class="ai-point"><div class="ai-point-top"><strong>${escapeHtml(point.field)}: ${escapeHtml(point.value)}</strong><span class="ai-badge ${className}">${label}</span></div><p>${escapeHtml(point.evidence)}</p></li>`;
-    }).join("");
-
-    const rulesHtml = rules.map((rule) => `<div class="ai-rule"><strong>${escapeHtml(rule.rule)}${rule.article ? ` · ${escapeHtml(rule.article)}` : ""}</strong><small>${escapeHtml(rule.source_organisation)}</small><p>${escapeHtml(rule.explanation)}</p></div>`).join("");
-
-    const sourcesHtml = sources.map((source) => {
-      const url = safeUrl(source.url);
-      return url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.title || "Official web source")} ↗</a>` : "";
-    }).join("");
+    const departure = getFormValue("departureAirport") || "Departure";
+    const arrival = getFormValue("arrivalAirport") || "Arrival";
+    const flightNumber = getFormValue("flightNumber").toUpperCase() || "Not supplied";
+    const airline = getFormValue("airline") || "Not supplied";
 
     panel.classList.remove("hidden");
     panel.innerHTML = `
-      <div class="ai-head"><div><span class="quiet-label">Evidence-based assessment</span><h3>${escapeHtml(analysis.confidence || "review")} confidence</h3><p>Generated by Bruce Rogers using the secure AI backend.</p></div><span class="ai-live">Research complete</span></div>
-      <p class="ai-summary">${escapeHtml(analysis.case_summary || "The case was analysed, but no summary was returned.")}</p>
-      <div class="ai-section"><h4>Verification points</h4><ul class="ai-list">${pointsHtml || `<li class="ai-warning">No verification points were returned.</li>`}</ul></div>
-      <div class="ai-section"><h4>Possible entitlement</h4><p class="ai-warning">${escapeHtml(analysis.possible_entitlement || "Unable to determine from the available evidence.")}</p></div>
-      <div class="ai-section"><h4>Applicable rules</h4><div class="ai-list">${rulesHtml || `<p class="ai-warning">No specific rule was safely identified.</p>`}</div></div>
-      <div class="ai-section"><h4>Conflicts</h4>${listHtml(analysis.contradictions, "No conflicts were identified, but this is not document-authenticity verification.")}</div>
-      <div class="ai-section"><h4>Missing evidence</h4>${listHtml(analysis.missing_evidence, "No additional evidence was listed.")}</div>
-      <div class="ai-section"><h4>Recommended next steps</h4>${listHtml(analysis.next_steps, "Review every statement before using the claim.")}</div>
-      <div class="ai-section ai-sources"><h4>Web sources</h4>${sourcesHtml || `<p class="ai-warning">The search returned no clickable source links. Do not treat the legal assessment as independently sourced until the official pages are checked.</p>`}</div>
-      <div class="ai-meta">${escapeHtml(analysis.disclaimer || "General information only. Bruce Rogers is software, not a human or licensed lawyer.")}</div>
+      <div class="ai-hero">
+        <div class="ai-hero-top">
+          <div class="ai-bruce-identity">
+            <span class="ai-bruce-mark">BR</span>
+            <div><strong>Bruce Rogers</strong><span>AI Claims Assistant</span></div>
+          </div>
+          <span class="ai-live-pill">Research complete</span>
+        </div>
+        <h3>Evidence-based case review</h3>
+        <p>${escape(analysis.case_summary || "The case was researched, but the service returned no summary.")}</p>
+        <div class="ai-route-strip">
+          <div class="ai-route-airport"><span>From</span><strong>${escape(departure)}</strong></div>
+          <span class="ai-route-arrow">→</span>
+          <div class="ai-route-airport"><span>To</span><strong>${escape(arrival)}</strong></div>
+        </div>
+      </div>
+
+      <div class="ai-body">
+        <div class="ai-summary-grid">
+          <div class="ai-summary-stat"><span>Flight</span><strong>${escape(flightNumber)} · ${escape(airline)}</strong></div>
+          <div class="ai-summary-stat"><span>Travel date</span><strong>${escape(displayDate(getFormValue("flightDate")))}</strong></div>
+          <div class="ai-summary-stat"><span>Research confidence</span><span class="ai-confidence-pill ${confidence}">${escape(confidence)}</span></div>
+        </div>
+
+        <section class="ai-section">
+          <div class="ai-title-row"><h4>Possible entitlement</h4><span>Not a guarantee</span></div>
+          <div class="ai-entitlement"><span>Initial researched view</span><strong>${escape(analysis.possible_entitlement || "Unable to determine from the available evidence.")}</strong></div>
+        </section>
+
+        <section class="ai-section">
+          <div class="ai-title-row"><h4>What could be verified</h4><span>${points.length} checks</span></div>
+          ${renderVerification(points)}
+        </section>
+
+        <section class="ai-section">
+          <div class="ai-title-row"><h4>Relevant rules</h4><span>${rules.length} sources of law</span></div>
+          ${renderRules(rules)}
+        </section>
+
+        <section class="ai-section">
+          <div class="ai-title-row"><h4>Evidence review</h4><span>Before sending</span></div>
+          <div class="ai-split-grid">
+            <div class="ai-info-box danger"><h5>Conflicts or concerns</h5>${listMarkup(analysis.contradictions, "No conflict was reported. This is not document-authenticity verification.")}</div>
+            <div class="ai-info-box warning"><h5>Still needed</h5>${listMarkup(analysis.missing_evidence, "No additional evidence was listed.")}</div>
+          </div>
+        </section>
+
+        <section class="ai-section">
+          <div class="ai-title-row"><h4>Recommended next steps</h4><span>Action plan</span></div>
+          ${listMarkup(analysis.next_steps, "Review every statement and supporting document before sending the claim.")}
+        </section>
+
+        <section class="ai-section">
+          <div class="ai-title-row"><h4>Research sources</h4><span>Open to verify</span></div>
+          ${renderSources(sources)}
+        </section>
+
+        <div class="ai-meta-note">${escape(analysis.disclaimer || "General information only. Bruce Rogers is software, not a human or licensed lawyer. The claimant must review and approve the final email.")}</div>
+
+        <div class="ai-action-row">
+          <button type="button" class="secondary-button" id="aiResearchAgainButton">Research again</button>
+          <button type="button" class="primary-button" id="openAiLetterButton">Open claim email</button>
+        </div>
+      </div>
     `;
+
+    document.getElementById("aiResearchAgainButton")?.addEventListener("click", () => {
+      const button = document.getElementById("buildLetterButton");
+      if (button) runAiResearch(button);
+    });
+    document.getElementById("openAiLetterButton")?.addEventListener("click", openPreparedLetter);
+    panel.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  function renderError(error) {
-    const panel = ensurePanel();
-    panel.classList.remove("hidden");
-    panel.innerHTML = `
-      <div class="ai-head"><div><span class="quiet-label">AI connection</span><h3>The live research could not finish</h3></div></div>
-      <div class="ai-error">${escapeHtml(error.message || "Unknown connection error.")}<div class="ai-error-actions"><button type="button" class="secondary-button" id="basicLetterFallback">Use basic offline letter</button></div></div>
-    `;
-    document.getElementById("basicLetterFallback")?.addEventListener("click", buildBasicLetter);
+  function stripGeneratedSignature(body) {
+    const text = String(body || "").trim();
+    const signatureIndex = text.search(/\n\s*Yours faithfully,?/i);
+    return signatureIndex >= 0 ? text.slice(0, signatureIndex).trim() : text;
+  }
+
+  function formatEmailBody(body) {
+    const text = stripGeneratedSignature(body).replaceAll("\r", "");
+    const lines = text.split("\n");
+    let html = "";
+    let listOpen = false;
+
+    const closeList = () => {
+      if (listOpen) {
+        html += "</ul>";
+        listOpen = false;
+      }
+    };
+
+    for (const rawLine of lines) {
+      const line = rawLine.trim();
+      if (!line) {
+        closeList();
+        continue;
+      }
+
+      const bullet = line.match(/^(?:[-*•]|\d+[.)])\s+(.+)$/);
+      if (bullet) {
+        if (!listOpen) {
+          html += "<ul>";
+          listOpen = true;
+        }
+        html += `<li>${escape(bullet[1])}</li>`;
+        continue;
+      }
+
+      closeList();
+      if (/^dear\b/i.test(line)) {
+        html += `<p class="email-greeting">${escape(line)}</p>`;
+      } else if (line.endsWith(":") && line.length < 80) {
+        html += `<h4>${escape(line.slice(0, -1))}</h4>`;
+      } else {
+        html += `<p>${escape(line)}</p>`;
+      }
+    }
+
+    closeList();
+    return html || "<p>The AI did not return an email body. Use the researched assessment to prepare the claim manually.</p>";
   }
 
   function renderAiLetter(payload) {
     const analysis = payload.analysis || {};
     const email = analysis.email || {};
     const sources = Array.isArray(payload.sources) ? payload.sources : [];
-    const body = String(email.body || "").trim();
+    const claimant = getFormValue("claimantName") || "the claimant";
 
     let reference = "";
     try {
@@ -176,46 +369,115 @@
       reference = `HL-${new Date().toISOString().slice(0, 10).replaceAll("-", "")}`;
     }
 
-    const sourceLinks = sources.map((source) => {
+    const sourceItems = sources.map((source) => {
       const url = safeUrl(source.url);
-      return url ? `<li><a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.title || "Web source")}</a></li>` : "";
+      return url ? `<li><a href="${escape(url)}" target="_blank" rel="noopener noreferrer">${escape(source.title || sourceDomain(url))}</a></li>` : "";
     }).join("");
 
     const claimLetter = document.getElementById("claimLetter");
+    if (!claimLetter) return;
+
+    claimLetter.classList.add("ai-letter-preview");
     claimLetter.innerHTML = `
-      <div class="letter-head"><div><strong>HolidayLawyer.ai</strong><br><span>Researched and prepared with Bruce Rogers · AI Claims Assistant</span></div><strong>BR</strong></div>
-      <p><strong>Case reference:</strong> ${escapeHtml(reference)}</p>
-      <div class="ai-letter-subject"><strong>Subject:</strong> ${escapeHtml(email.subject || "Passenger rights claim")}</div>
-      <div class="ai-letter-body">${escapeHtml(body || "The AI did not return an email draft. Please use the assessment above.")}</div>
-      ${sourceLinks ? `<div class="ai-letter-sources"><strong>Research sources used by the assistant</strong><ul>${sourceLinks}</ul></div>` : ""}
-      <p class="letter-note">Bruce Rogers is software, not a human or licensed lawyer. Public flight information cannot prove passenger identity, booking ownership, cabin class or document authenticity. The claimant must verify and approve every statement before sending.</p>
+      <article class="email-sheet">
+        <header class="email-brand-header">
+          <div class="email-brand-row">
+            <div class="email-logo-wrap">
+              <img src="./holidaylawyer-logo.jpg" alt="" aria-hidden="true" />
+              <div class="email-brand-name"><strong>HolidayLawyer.ai</strong><span>Evidence-based passenger claim</span></div>
+            </div>
+            <span class="email-br-mark">BR</span>
+          </div>
+          <div class="email-meta-grid">
+            <div><span>Case</span><strong>${escape(reference)}</strong></div>
+            <div><span>Flight</span><strong>${escape(getFormValue("flightNumber").toUpperCase() || "Not supplied")}</strong></div>
+            <div><span>Date</span><strong>${escape(displayDate(getFormValue("flightDate")))}</strong></div>
+            <div><span>Route</span><strong>${escape(getFormValue("departureAirport") || "—")} → ${escape(getFormValue("arrivalAirport") || "—")}</strong></div>
+          </div>
+        </header>
+
+        <div class="email-content">
+          <div class="email-subject-card"><span>Email subject</span><strong>${escape(email.subject || "Passenger-rights claim")}</strong></div>
+          <div class="email-body">${formatEmailBody(email.body)}</div>
+
+          <div class="email-signature">
+            <span class="email-br-mark">BR</span>
+            <div class="email-signature-text">
+              <strong>Bruce Rogers</strong>
+              <span>AI Claims Assistant · HolidayLawyer.ai</span>
+              <small>Prepared on behalf of ${escape(claimant)}</small>
+            </div>
+          </div>
+
+          ${sourceItems ? `<footer class="email-source-footer"><h4>Research sources used</h4><ol>${sourceItems}</ol></footer>` : ""}
+          <div class="email-review-note">Reviewed and approved by the claimant before sending. Bruce Rogers is software, not a human or licensed lawyer. Public flight information cannot prove passenger identity, booking ownership, cabin class or document authenticity.</div>
+        </div>
+      </article>
     `;
 
     document.getElementById("letterCard")?.classList.remove("hidden");
     try {
       updateHomeAndCase();
+    } catch {
+      // The letter remains usable even if the compact case summary cannot update.
+    }
+  }
+
+  function openPreparedLetter() {
+    document.getElementById("letterCard")?.classList.remove("hidden");
+    try {
       showView("case");
     } catch {
-      document.querySelector('[data-view="check"]')?.classList.remove("active");
+      document.querySelectorAll(".app-view").forEach((view) => view.classList.remove("active"));
       document.querySelector('[data-view="case"]')?.classList.add("active");
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }
 
+  function renderError(error) {
+    const panel = ensurePanel();
+    panel.classList.remove("hidden");
+    panel.innerHTML = `
+      <div class="ai-error-card">
+        <div class="ai-bruce-identity" style="margin-bottom:14px">
+          <span class="ai-bruce-mark">BR</span>
+          <div><strong style="color:#17233a">Bruce Rogers</strong><span style="color:#718096">AI Claims Assistant</span></div>
+        </div>
+        <h3>The live research could not finish</h3>
+        <p>The website design and offline case checker still work. The problem is only with the live AI request.</p>
+        <div class="ai-error-box"><p>${escape(error.message || "Unknown connection error.")}</p></div>
+        <div class="ai-action-row">
+          <button type="button" class="secondary-button" id="basicLetterFallback">Use basic offline email</button>
+          <button type="button" class="primary-button" id="retryAiButton">Try again</button>
+        </div>
+      </div>
+    `;
+    document.getElementById("basicLetterFallback")?.addEventListener("click", buildBasicLetter);
+    document.getElementById("retryAiButton")?.addEventListener("click", () => {
+      const button = document.getElementById("buildLetterButton");
+      if (button) runAiResearch(button);
+    });
+  }
+
   function buildBasicLetter() {
     try {
       if (!state.reference) state.reference = createReference();
-      document.getElementById("claimLetter").innerHTML = buildLetter();
-      document.getElementById("letterCard").classList.remove("hidden");
+      const claimLetter = document.getElementById("claimLetter");
+      claimLetter?.classList.remove("ai-letter-preview");
+      if (claimLetter) claimLetter.innerHTML = buildLetter();
+      document.getElementById("letterCard")?.classList.remove("hidden");
       updateHomeAndCase();
       showView("case");
-      showToast("Basic letter created without live research.");
+      showToast("Basic email created without live research.");
     } catch {
-      showToast("The basic letter could not be created.");
+      showToast("The basic email could not be created.");
     }
   }
 
   async function runAiResearch(button) {
+    if (!button || button.disabled) return;
+
+    latestAiResponse = null;
     button.disabled = true;
     button.dataset.originalText = button.textContent;
     button.textContent = "Bruce is researching…";
@@ -227,18 +489,20 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(buildPayload())
       });
+
       const data = await response.json().catch(() => ({}));
       if (!response.ok || !data.ok) {
         throw new Error(data.details || data.error || `The AI service returned error ${response.status}.`);
       }
+
       latestAiResponse = data;
-      try { state.aiResponse = data; } catch { /* app state remains optional */ }
+      try { state.aiResponse = data; } catch { /* AI response storage is optional. */ }
       renderAiResult(data);
       renderAiLetter(data);
-      showToast("Live research complete. Review the evidence and letter.");
+      showToast("Research complete. Review the evidence, then open the claim email.");
     } catch (error) {
       renderError(error);
-      showToast("AI research failed. You can retry or use the basic letter.");
+      showToast("AI research failed. Retry or use the offline email.");
     } finally {
       button.disabled = false;
       button.textContent = latestAiResponse ? "Research again" : "Try AI research again";
@@ -246,10 +510,12 @@
   }
 
   function init() {
-    injectStyles();
+    ensureStylesheet();
     ensurePanel();
+
     const button = document.getElementById("buildLetterButton");
     if (!button) return;
+
     button.textContent = "Research & build with AI";
     button.addEventListener("click", (event) => {
       event.preventDefault();
@@ -258,12 +524,14 @@
     }, true);
 
     const resultCard = document.getElementById("resultCard");
-    const observer = new MutationObserver(() => {
-      if (!resultCard.classList.contains("hidden") && !latestAiResponse) {
-        button.textContent = "Research & build with AI";
-      }
-    });
-    observer.observe(resultCard, { attributes: true, attributeFilter: ["class"] });
+    if (resultCard) {
+      const observer = new MutationObserver(() => {
+        if (!resultCard.classList.contains("hidden") && !latestAiResponse) {
+          button.textContent = "Research & build with AI";
+        }
+      });
+      observer.observe(resultCard, { attributes: true, attributeFilter: ["class"] });
+    }
   }
 
   init();
