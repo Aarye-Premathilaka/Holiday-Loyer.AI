@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const TECHNICAL_ERROR_PATTERN = /additionalProperties|response_schema|Invalid JSON payload|generation_config|responseSchema/i;
+  const TECHNICAL_ERROR_PATTERN = /additionalProperties|response_schema|Invalid JSON payload|generation_config|responseSchema|no longer available|newer model|model.*not.*available/i;
 
   function formValue(name) {
     const value = document.getElementById("caseForm")?.elements[name]?.value;

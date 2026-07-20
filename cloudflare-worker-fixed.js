@@ -4,8 +4,8 @@ const ALLOWED_ORIGINS = [
   "http://127.0.0.1:8080",
 ];
 
-const MODEL = "gemini-2.5-flash-lite";
-const VERSION = "2026-07-20-final";
+const MODEL = "gemini-3.1-flash-lite";
+const VERSION = "2026-07-20-gemini-3.1";
 
 function corsHeaders(request) {
   const origin = request.headers.get("Origin");
