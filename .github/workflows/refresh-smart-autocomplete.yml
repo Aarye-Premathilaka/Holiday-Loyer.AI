@@ -1,0 +1,36 @@
+name: Refresh smart autocomplete assets
+
+on:
+  push:
+    paths:
+      - '.github/workflows/refresh-smart-autocomplete.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Refresh autocomplete asset versions
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace('airport-autocomplete.css?v=20260720-1', 'airport-autocomplete.css?v=20260720-4')
+          text = text.replace('airport-autocomplete.js?v=20260720-1', 'airport-autocomplete.js?v=20260720-4')
+          text = text.replace('placeholder="Example Airways"', 'placeholder="Airline name"')
+          text = text.replace('placeholder="Start typing: Zürich, ZRH…"', 'placeholder="Airport or city"')
+          text = text.replace('placeholder="Start typing: London, LHR…"', 'placeholder="Airport or city"')
+          path.write_text(text, encoding='utf-8')
+          PY
+      - name: Commit refreshed website
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Use smart airport and airline fields" || exit 0
+          git push
