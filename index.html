@@ -8,7 +8,7 @@
   <title>HolidayLawyer.ai</title>
   <link rel="stylesheet" href="./styles.css?v=20260719-2" />
   <link rel="stylesheet" href="./ai-styles.css?v=20260719-2" />
-  <link rel="stylesheet" href="./airport-autocomplete.css?v=20260720-1" />
+  <link rel="stylesheet" href="./airport-autocomplete.css?v=20260720-4" />
   <link rel="stylesheet" href="./formal-document.css?v=20260720-2" />
   <link rel="icon" type="image/jpeg" href="./holidaylawyer-logo.jpg" />
 </head>
@@ -142,12 +142,12 @@
               <div class="field-grid">
                 <label><span>Full name</span><input name="claimantName" type="text" placeholder="Alex Example" required /></label>
                 <label><span>Email</span><input name="claimantEmail" type="email" placeholder="alex@example.com" required /></label>
-                <label><span>Airline</span><input name="airline" type="text" placeholder="Example Airways" required /></label>
+                <label><span>Airline</span><input name="airline" type="text" placeholder="Airline name" required /></label>
                 <label><span>Booking reference</span><input name="bookingReference" type="text" placeholder="ABC123" required /></label>
                 <label><span>Flight number</span><input name="flightNumber" type="text" placeholder="XY123" required /></label>
                 <label><span>Flight date</span><input name="flightDate" type="date" required /></label>
-                <label><span>From</span><input name="departureAirport" type="text" placeholder="Start typing: Zürich, ZRH…" required /></label>
-                <label><span>To</span><input name="arrivalAirport" type="text" placeholder="Start typing: London, LHR…" required /></label>
+                <label><span>From</span><input name="departureAirport" type="text" placeholder="Airport or city" required /></label>
+                <label><span>To</span><input name="arrivalAirport" type="text" placeholder="Airport or city" required /></label>
               </div>
               <label class="wide-field"><span>Short factual summary</span><textarea name="caseSummary" rows="5" placeholder="What happened, in date order..." required></textarea></label>
               <label class="wide-field"><span>Requested result</span><select name="requestedOutcome" required><option value="">Choose</option><option value="compensation">Compensation</option><option value="refund">Refund</option><option value="expenses">Expenses</option><option value="compensation-expenses">Compensation and expenses</option><option value="written-response">Written explanation</option></select></label>
@@ -283,7 +283,7 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="./app.js?v=20260719-2"></script>
   <script src="./ai.js?v=20260719-2"></script>
-  <script src="./airport-autocomplete.js?v=20260720-1"></script>
+  <script src="./airport-autocomplete.js?v=20260720-4"></script>
   <script src="./formal-document.js?v=20260720-2"></script>
 </body>
 </html>
