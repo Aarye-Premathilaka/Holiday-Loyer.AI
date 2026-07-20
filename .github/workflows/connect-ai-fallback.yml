@@ -1,0 +1,38 @@
+name: Connect AI fallback
+
+on:
+  push:
+    paths:
+      - '.github/workflows/connect-ai-fallback.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  connect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add fallback script to website
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          script = '  <script src="./ai-resilient-fallback.js?v=20260720-1"></script>'
+          if script not in s:
+              marker = '  <script src="./formal-document.js?v=20260720-2"></script>'
+              if marker in s:
+                  s = s.replace(marker, marker + '\n' + script)
+              else:
+                  s = s.replace('</body>', script + '\n</body>')
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit website update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/connect-ai-fallback.yml
+          git add index.html
+          git commit -m "Connect graceful AI fallback" || true
+          git push
