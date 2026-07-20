@@ -1,0 +1,46 @@
+name: Install document library
+
+on:
+  push:
+    paths:
+      - ".github/workflows/install-document-library.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Add document library to website
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("index.html")
+          text = path.read_text(encoding="utf-8")
+          script = '  <script src="./document-library.js?v=20260720-1"></script>'
+
+          if script not in text:
+              marker = '  <script src="./ai-resilient-fallback.js?v=20260720-3"></script>'
+              if marker not in text:
+                  raise SystemExit("Could not find the fallback script marker in index.html")
+              text = text.replace(marker, marker + "\n" + script)
+              path.write_text(text, encoding="utf-8")
+          PY
+
+      - name: Commit website update
+        run: |
+          if git diff --quiet; then
+            echo "Document library is already installed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Enable PDF downloads and document history"
+          git push origin HEAD:main
