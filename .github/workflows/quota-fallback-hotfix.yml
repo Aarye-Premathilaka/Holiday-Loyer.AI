@@ -1,0 +1,48 @@
+name: Quota fallback hotfix
+
+on:
+  push:
+    paths:
+      - '.github/workflows/quota-fallback-hotfix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  hotfix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Apply fallback fix
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          fallback = Path('ai-resilient-fallback.js')
+          text = fallback.read_text(encoding='utf-8')
+          old = 'const TECHNICAL_ERROR_PATTERN = /additionalProperties|response_schema|Invalid JSON payload|generation_config|responseSchema|no longer available|newer model|model.*not.*available/i;'
+          new = 'const TECHNICAL_ERROR_PATTERN = /additionalProperties|response_schema|Invalid JSON payload|generation_config|responseSchema|no longer available|newer model|model.*not.*available|quota|billing|rate.?limit|RESOURCE_EXHAUSTED|429|exceeded your current quota/i;'
+          if old in text:
+              text = text.replace(old, new)
+          else:
+              text = text.replace('model.*not.*available/i;', 'model.*not.*available|quota|billing|rate.?limit|RESOURCE_EXHAUSTED|429|exceeded your current quota/i;')
+          text = text.replace('The live research service has not updated yet, so a clearly labelled offline draft was created instead. No technical error will be included in the document.', 'The live AI allowance is temporarily unavailable, so a clearly labelled offline formal draft was created instead. No technical error will appear in the document.')
+          fallback.write_text(text, encoding='utf-8')
+
+          index = Path('index.html')
+          html = index.read_text(encoding='utf-8')
+          import re
+          html = re.sub(r'ai-resilient-fallback\.js\?v=[^"\']+', 'ai-resilient-fallback.js?v=20260720-3', html)
+          index.write_text(html, encoding='utf-8')
+
+          Path('.github/workflows/quota-fallback-hotfix.yml').unlink(missing_ok=True)
+          PY
+
+      - name: Commit fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ai-resilient-fallback.js index.html .github/workflows/quota-fallback-hotfix.yml
+          git commit -m "Handle Gemini quota with offline formal document"
+          git push
