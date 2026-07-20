@@ -1,0 +1,51 @@
+name: Update Gemini model
+
+on:
+  push:
+    paths:
+      - '.github/workflows/update-gemini-model.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update Worker and fallback
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          worker = Path('cloudflare-worker-fixed.js')
+          text = worker.read_text(encoding='utf-8')
+          text = text.replace('const MODEL = "gemini-2.5-flash-lite";', 'const MODEL = "gemini-3.1-flash-lite";')
+          text = text.replace('const VERSION = "2026-07-20-final";', 'const VERSION = "2026-07-20-gemini-3.1";')
+          worker.write_text(text, encoding='utf-8')
+
+          fallback = Path('ai-resilient-fallback.js')
+          if fallback.exists():
+              text = fallback.read_text(encoding='utf-8')
+              text = text.replace(
+                  '/additionalProperties|response_schema|Invalid JSON payload|generation_config|responseSchema/i',
+                  '/additionalProperties|response_schema|Invalid JSON payload|generation_config|responseSchema|no longer available|newer model|model.*not.*available/i'
+              )
+              fallback.write_text(text, encoding='utf-8')
+
+          index = Path('index.html')
+          if index.exists():
+              text = index.read_text(encoding='utf-8')
+              text = text.replace('ai-resilient-fallback.js?v=20260720-1', 'ai-resilient-fallback.js?v=20260720-2')
+              index.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Commit update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -f .github/workflows/update-gemini-model.yml
+          git add cloudflare-worker-fixed.js ai-resilient-fallback.js index.html .github/workflows/update-gemini-model.yml
+          git commit -m "Use Gemini 3.1 Flash-Lite" || true
+          git push
