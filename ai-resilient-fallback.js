@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const TECHNICAL_ERROR_PATTERN = /additionalProperties|response_schema|Invalid JSON payload|generation_config|responseSchema|no longer available|newer model|model.*not.*available/i;
+  const TECHNICAL_ERROR_PATTERN = /additionalProperties|response_schema|Invalid JSON payload|generation_config|responseSchema|no longer available|newer model|model.*not.*available|quota|billing|rate.?limit|RESOURCE_EXHAUSTED|429|exceeded your current quota/i;
 
   function formValue(name) {
     const value = document.getElementById("caseForm")?.elements[name]?.value;
@@ -197,7 +197,7 @@
         </div>
         <h3>${created ? "Your formal document is ready" : "Live research is temporarily unavailable"}</h3>
         <p>${created
-          ? "The live research service has not updated yet, so a clearly labelled offline draft was created instead. No technical error will be included in the document."
+          ? "The live AI allowance is temporarily unavailable, so a clearly labelled offline formal draft was created instead. No technical error will appear in the document."
           : "The live research service has not updated yet. Please retry after the Cloudflare Worker shows the final version."}</p>
         <div class="ai-meta-note">Offline mode does not independently verify the flight, airline, evidence or applicable law. Review the document before sending.</div>
         <div class="ai-action-row">
